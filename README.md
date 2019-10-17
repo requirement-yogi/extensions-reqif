@@ -19,6 +19,11 @@ Tips:
    the same directory where you've launched the Atlassian SDK command, it will monitor the current directory and
    reinstall the .jar, as long as its version is above.
 
+# How come the "pipelines" are red?
+
+We just don't have a public repository with requirementyogi-*.jar published, and Maven can't compile without it.
+You can download this jar from the Atlassian Marketplace and install it on your machine in order to compile  the project.
+
 # Can I contribute ?
 
 Sure, as long as you accept the license. Send us a pull request.
