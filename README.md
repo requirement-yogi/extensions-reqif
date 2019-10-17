@@ -1,6 +1,7 @@
 # ReqIF extension for Requirement Yogi
 
-This is an open-source project. Feel free to clone and try it.
+This is an open-source project. Feel free to clone and try it. This is the source code of the app named
+"ReqIF extension for Requirement Yogi" on the Atlassian Marketplace.
 
 # What to do if you want to create your own importer?
 
@@ -20,7 +21,7 @@ Tips:
 
 # Can I contribute ?
 
-Sure, as long as you accept the license.
+Sure, as long as you accept the license. Send us a pull request.
 
 # Is it open-source ?
 
