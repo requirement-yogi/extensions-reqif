@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>$action.getActionName($action.getClass().getName())</title>
+</head>
+
+<body>
+#if ($message)
+    $message
+#else
+    An error was encountered.
+#end
+
+<div id="aui-message-bar"></div>
+    #parse ( "/template/includes/actionmessages.vm" )
+    #parse ( "/template/includes/actionerrors.vm" )
+
+<br/>
+    #if ($hintLink)
+    <a href="$action.encodeHtml("${req.contextPath}${hintLink}")">Continue &gt;&gt;&gt;</a>
+    #else
+    Press the 'Back' button of your browser to come back to the previous screen.
+    #end
+
+</body>

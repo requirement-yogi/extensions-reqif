@@ -1,0 +1,60 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+
+<!--        <param name="plugin-icon">img/rytest-16x.png</param>
+        <param name="plugin-logo">img/rytest-72x.png</param>
+
+        <param name="plugin-banner">img/rytest-banner.png</param>
+        <param name="vendor-icon">img/playsql-16px.png</param>
+        <param name="vendor-logo">img/playsql-72px.png</param>-->
+    </plugin-info>
+
+    <resource key="img" name="img/" type="download" location="img" />
+    <resource type="i18n" name="Internationalization" location="com/playsql/extensions-reqif-i18n" />
+
+    <web-item key="ry-nav-import" name="Import tab in the nav" section="requirementyogi/space-nav-bar" weight="110">
+        <label>Import from ReqIF</label>
+        <link linkId="reqif-form">${req.contextPath}/reqif/view.action?key=${action.getSpaceKey()}</link>
+    </web-item>
+
+    <web-resource key="reqif-action" name="JS and CSS for the import console page">
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+        <resource type="download" name="reqif-action.js" location="js/reqif-action.js"/>
+        <dependency>com.atlassian.auiplugin:aui-toggle</dependency>
+    </web-resource>
+
+    <xwork name="MVC Actions" key="xwork-reqif">
+        <description>MVC Actions for all pages provided by the plugin</description>
+        <package name="reqif" extends="default" namespace="/reqif">
+            <action name="view" class="com.playsql.extensions.reqif.ReqifAction" method="doDefault">
+                <interceptor-ref name="defaultStack" />
+                <result name="show-attachment-list" type="velocity">/reqif-list.vm</result>
+                <result name="show-one-attachment" type="velocity">/reqif-document.vm</result>
+                <result name="error" type="velocity">/error.vm</result>
+            </action>
+        </package>
+    </xwork>
+
+    <component key="reqifDocumentManager" name="ReqIF Document Manager" class="com.playsql.extensions.reqif.managers.ReqifDocumentManager"/>
+
+    <!-- Classes implemented by the host application (or by Requirement Yogi and made public) -->
+    <component-import key="external-api" name="External API" interface="com.playsql.requirementyogi.api.ExternalAPI"/>
+    <component-import key="requirement-service" name="Requirement service" interface="com.playsql.requirementyogi.api.RequirementService"/>
+    <component-import key="plugin-settings-factory" name="Plugin settings" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
+    <component-import key="rendered-content-cleaner" name="Rendered content cleaner" interface="com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner"/>
+    <component-import key="attachment-manager" name="Attachment manager" interface="com.atlassian.confluence.pages.AttachmentManager"/>
+    <component-import key="event-publisher" name="Event publisher" interface="com.atlassian.event.api.EventPublisher"/>
+
+    <rest key="rest" path="/reqifimport" version="1" name="REST resources for ReqIF">
+        <description>REST API for reqif import</description>
+        <package>com.playsql.extensions.reqif.rest</package>
+    </rest>
+
+    <requirementyogi-extension key="descriptor" class="com.playsql.extensions.reqif.ReqifDescriptor" />
+
+</atlassian-plugin>

@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>$action.getText("com.playsql.extensions.reqif.ReqifAction.action.name")</title>
+    <meta name="decorator" content="main"/>
+    #requireResource("com.playsql.extensions.reqif:reqif-action")
+
+</head>
+    #applyDecorator("root")
+    #decoratorParam("helper" $action.helper)
+    #decoratorParam("context" "space-baseline-index")
+    #decoratorParam("mode" "collector")
+    #decoratorParam("collector-key" "requirement-sidebar-link")
+<body>
+
+    $!{action.getNavbarHtml("reqif-form")}
+
+## Dialog shown when user wants to delete an attachment
+
+<section id="delete-attachment-warning-dialog" class="aui-dialog2 aui-dialog2-medium aui-dialog2-warning aui-layer" role="dialog" aria-hidden="true" data-aui-modal="true" data-aui-focus-selector=".aui-dialog2-footer #warning-dialog-cancel">
+    <header class="aui-dialog2-header">
+        <h2 class="aui-dialog2-header-main">File deletion confirmation</h2>
+    </header>
+    <div class="aui-dialog2-content">
+        <p>
+            Are you sure you want to permanently delete the selected file along with its mapping configuration and requirements data?
+            This action cannot be undone.</p>
+    </div>
+    <footer class="aui-dialog2-footer">
+        <div class="aui-dialog2-footer-actions">
+            <button id="warning-dialog-confirm" class="aui-button">Delete permanently</button>
+            <button id="warning-dialog-cancel" class="aui-button">Cancel</button>
+        </div>
+    </footer>
+</section>
+
+<h2>Files List</h2>
+<div id="navigation" class="content-navigation">
+    <ul class="ajs-menu-bar">
+        #if ($paginationPrevUrl)
+            <li class="ajs-button normal">
+                <a href="$paginationPrevUrl" tabindex="5">&lt;&lt; Previous</a>
+            </li>
+        #end
+
+        #if ($paginationStart > 0 && $paginationEnd > 0 && $paginationCount > 0)
+            <li class="ajs-button normal">
+                #if ($paginationStart > $paginationCount)
+                    invalid offset for $paginationCount attachments
+                #else
+                    ${paginationStart}-${paginationEnd} of $paginationCount attachments
+                #end
+            </li>
+        #end
+        #if ($paginationNextUrl)
+            <li class="ajs-button normal">
+                <a href="$paginationNextUrl" tabindex="6">Next &gt;&gt;</a>
+            </li>
+        #end
+    </ul>
+</div>
+
+<p class="pagination">
+    #if ($hasPreviousPage)
+        <a href="${previousPageUrl}">Previous</a> |
+    #else
+        Previous |
+    #end
+    #if ($totalResults == 1)
+        1 attachment
+    #elseif ($totalResults)
+        ${reqifAttachments.size()} of $totalResults attachments
+    #end
+    #if ($hasNextPage)
+        | <a href="${nextPageUrl}">Next</a>
+    #else
+        | Next
+    #end
+</p>
+<table class="aui aui-table-interactive aui-table-sortable">
+    <thead>
+    <tr class="tablesorter-headerRow">
+        <th class="tablesorter-header col-name">Name</th>
+        <th class="tablesorter-header col-version">Version</th>
+        <th class="tablesorter-header col-creation-date">Created (Desc)</th>
+        <th class="tablesorter-header col-labels">Labels</th>
+        <th class="tablesorter-header col-page-title">Attached To</th>
+        <th class="tablesorter-header col-actions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+        #foreach ($reqifAttachment in $reqifAttachments)
+        <tr #if($reqifAttachment.id == $id) style="background-color:#FFC400;" #end data-attachment-id="$!{reqifAttachment.id}" data-page-id="$!{reqifAttachment.pageId}">
+            <td class="col-name"><span class="aui-icon content-type-attachment-reqif" title="ReqIF Content">ReqIF Content</span> <a href="$!{reqifAttachment.url}">$!{reqifAttachment.attachment.fileName}</a></td>
+            <td class="col-version">$!{reqifAttachment.attachment.version}</td>
+            <td class="col-creation-date">$!{reqifAttachment.creationDate}</td>
+            <td class="col-labels">
+                #foreach ($label in $reqifAttachment.attachment.getLabels())
+                    <a class="aui-label" href="${req.contextPath}${label.getUrlPath($spaceKey)}">${label.getDisplayTitle()}</a>
+                #end
+            </td>
+            <td class="col-page-title"><span class="icon aui-icon content-type-page" title="Page">Page:</span> <a href="$reqifAttachment.pageUrlPath">$reqifAttachment.pageTitle</a></td>
+            <td class="col-actions">
+                <span class="aui-icon aui-icon-small aui-iconfont-settings">View the details and configure the import</span> <a href="$reqifAttachment.url">Configure</a>
+                |
+                <span class="aui-icon aui-icon-small aui-iconfont-view">Go to the attachments of the page</span> <a href="$reqifAttachment.pageAttachmentsUrlPath">Page attachments</a>
+                |
+                <span class="aui-icon aui-icon-small aui-iconfont-search">See the requirements imported by this file in the "search" screen</span>
+                <a href="$reqifAttachment.seeAttachmentsActionUrlPath"> List</a></td>
+        </tr>
+        #end
+
+        #if ($reqifAttachments.isEmpty())
+        <tr>
+            <td colspan="7"><i>No file in this space with the label 'ry-reqif-import'.</i></td>
+        </tr>
+        #end
+
+    </tbody>
+</table>
+
+<p class="pagination">
+    #if ($hasPreviousPage)
+        <a href="${previousPageUrl}">Previous</a> |
+    #else
+        Previous |
+    #end
+    #if ($totalResults == 1)
+        1 attachment
+    #elseif ($totalResults)
+        ${reqifAttachments.size()} of $totalResults attachments
+    #end
+    #if ($hasNextPage)
+        | <a href="${nextPageUrl}">Next</a>
+    #else
+        | Next
+    #end
+</p>
+
+<h2>New File Upload</h2>
+
+<form class="aui" id="reqif-integration-upload-form">
+
+
+    <div class="field-group">
+        <label for="reqif-file">File</label>
+        <input id="new-reqif-filename" type="file" class="upfile long-field" name="file" value=""/>
+        &nbsp;
+        <div class="description">Upload a ReqIF file to parse it for requirements. Max ${action.getLimitForImport()} requirements per import.</div>
+    </div>
+    <div class="field-group">
+        <label for="attachment-destination-page">Attach To Page<span class="aui-icon icon-required"> required</span></label>
+        <input id="attachment-destination-page" class="autocomplete-page text long-field" data-max="50"
+               data-none-message="No results" data-template="{title}" data-spacekey="$spaceKey"/>
+        <div class="description">Type the name of a page where the file will be attached</div>
+    </div>
+## show upload button only if a file hasn't yet been  uploaded
+    <div class="field-group buttons-area">
+        <label></label>
+        <input type="button" class="aui-button" value="Upload" id="reqif-integration-import-action"/>
+        <aui-spinner size="small" class="hidden">Please wait...</aui-spinner>
+    </div>
+
+</form>
+
+
+</body>
+
+
+#end
+</html>

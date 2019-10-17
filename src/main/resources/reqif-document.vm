@@ -1,0 +1,224 @@
+<html>
+<head>
+    <title>$action.getText("com.playsql.extensions.reqif.ReqifAction.view.name-with-file", [ $attachment.displayTitle ])</title>
+    <meta name="decorator" content="main"/>
+    #requireResource("com.playsql.extensions.reqif:reqif-action")
+</head>
+    #applyDecorator("root")
+    #decoratorParam("helper" $action.helper)
+    #decoratorParam("context" "space-requirement-reqif")
+    #decoratorParam("mode" "collector")
+    #decoratorParam("collector-key" "requirement-sidebar-link")
+<body>
+
+    ## We've included the nav-bar inline because we couldn't include space-navbar.vm
+    $!{action.getNavbarHtml("reqif-form")}
+
+    ## Dialog shown when user wants to reimport a ReqIF file
+
+    <section id="reimport-file-confirmation-dialog" class="aui-dialog2 aui-dialog2-medium aui-dialog2-warning aui-layer" role="dialog" aria-hidden="true" data-aui-modal="true" data-aui-focus-selector=".aui-dialog2-footer #reimport-file-confirmation-cancel">
+        <header class="aui-dialog2-header">
+            <h2 class="aui-dialog2-header-main">File reupload confirmation</h2>
+        </header>
+        <div class="aui-dialog2-content">
+            <p>
+                Are you sure you want to reupload file ?
+                The existing mapping configuration will be updated to match the new version file structure.</p>
+        </div>
+        <footer class="aui-dialog2-footer">
+            <div class="aui-dialog2-footer-actions">
+                <button id="reimport-file-confirmation-confirm" class="aui-button">Reupload</button>
+                <button id="reimport-file-confirmation-cancel" class="aui-button">Cancel</button>
+            </div>
+        </footer>
+    </section>
+
+
+    <h2>Uploaded File</h2>
+
+
+    <form class="aui" action="view.action?key=$key&id=$id" id="reqif-integration-form" method="post">
+
+    ##  field value is set if attachment id exists for the current reqif file
+        <input type="hidden" id="attachmentId" value="$attachment.id"/>
+        #form_xsrfToken()
+
+        <div class="field-group">
+            <label for="reqif-file">Name:</label>
+            <input id="old-filename"  type="text" class="text long-field" value="$attachment.fileName" disabled/>
+        </div>
+        <div class="field-group">
+            <label>Attached to:</label>
+            <p class="ry-text-in-form">
+                <span class="icon aui-icon content-type-page" title="Page">Page</span>
+                <a href="${req.contextPath}${attachment.getContainer().getUrlPath()}">${attachment.getContainer().getDisplayTitle()}</a> ## attachment -> find how to create an Attachment to use there
+            </p>
+        </div>
+        <div class="field-group">
+            <label>Links:</label>
+            <p class="ry-text-in-form">
+                <span class="aui-icon aui-icon-small aui-iconfont-view">Go to the attachments of the page</span> <a href="$attachmentsUrlPath">Page attachments</a>
+                |
+                <span class="aui-icon aui-icon-small aui-iconfont-search">See the requirements imported by this file in the "search" screen</span> <a href="$seeAttachmentsActionUrlPath">List</a>
+            </p>
+        </div>
+        #if ($hasEditPermission)
+            <div class="field-group">
+                <label for="reqif-file">File:</label>
+                <input type="file" class="upfile long-field" name="file" value=""/>
+                &nbsp;
+                <div class="description">Reupload the attachment</div>
+            </div>
+            <input id="attachment-destination-page" type="hidden" value="$attachmentPageId"/>
+
+            <div class="field-group buttons-area">
+                <label></label>
+                #*<input type="button" class="aui-button" value="Reupload" id="reqif-integration-reimport-action"/>*#
+                <button type="submit" class="aui-button" name="action" value="reupload" id="reqif-integration-reimport-action">Reupload</button>
+                <button type="submit" class="aui-button" name="action" value="cancel">Cancel</button>
+                <aui-spinner size="small" class="hidden">Please wait...</aui-spinner>
+                #*<a href="view.action?key=$spaceKey" title="Show the form to import a new file"><input type="button" class="aui-button" value="Cancel" id="reqif-integration-welcome-button"/></a>*#
+            </div>
+        #end
+
+        #set ($reqifDocument = $action.getReqifDocument())
+        #set ($reqifConfig = $action.getReqifConfig())
+        #if ($reqifDocument)
+            #set ($hasReqirements = false)
+            #foreach ($specObjectType in $reqifDocument.getSpecObjectTypesWithRequirements())
+                <h2>Object '$specObjectType.label'</h2>
+
+
+
+                <div class="reqif-spec-object-type" data-identifier="$specObjectType.identifier">
+
+                    #set ($isImported = ${reqifConfig.isImported($specObjectType.identifier)})
+
+                    #if($hasEditPermission)
+                        <div class="field-group">
+                            <label>Import?</label>
+                            <aui-toggle label="use gzip compression" class="reqif-spec-object-type-is-imported" #if($isImported) checked #end></aui-toggle>
+                        </div>
+                    #end
+
+                    <div class="field-group">
+                        <label>Category</label>
+                        <input id="$categoryFieldId" type="text" class="text long-field reqif-spec-object-category"
+                               value="$!{reqifConfig.getMappingCategory($specObjectType.identifier)}"
+                               #if(!$isImported) disabled #end>
+                        &nbsp;
+                        <div class="description">Type an optional category to contextually group the requirements</div>
+                    </div>
+
+
+                    ## Define the headers once for all
+                    #macro(th $identifier $description $label)
+                        <th data-identifier="$!identifier" class="confluenceTh">
+                            <span class="ry-tooltipable" title="$!description">$!label</span>
+                            <br>
+                            #if($hasEditPermission)
+                                #set ($mapping = "")
+                                #set ($mapping = $reqifConfig.getMapping($specObjectType.identifier, $identifier))
+                                <select class="select reqif-column-mapping" #if(!$isImported) disabled #end>
+                                    <option value="">-</option>
+                                    <option value="KEY"         #if ($mapping.isTargetKey())       selected #end>Key</option>
+                                    <option value="TEXT"        #if ($mapping.isTargetText())      selected #end>Description</option>
+                                    <option value="PROPERTY"    #if ($mapping.isTargetProperty())  selected #end>Property</option>
+                                </select>
+                                <input type="text" class="text reqif-column-mapping-property #if (!$mapping.isTargetProperty()) hidden #end"
+                                       #if ("$!{mapping.getMappedProperty()}" != "")
+                                           value="$!{mapping.getMappedProperty()}"
+                                       #else
+                                           value="$!label"
+                                       #end
+                                       placeholder="Property name"
+                                       #if(!$isImported) disabled #end>
+                                <span class="aui-icon aui-icon-small aui-iconfont-error hidden">Invalid value</span>
+                            #end
+                        </th>
+                    #end
+
+                    ## Define the <td> once for all
+                    #macro(td $requirement $identifier)
+                        <td data-identifier="$!identifier" class="confluenceTd">
+                            $!{requirement.get($!identifier).getValue()}
+                        </td>
+                    #end
+
+                    <table class="confluenceTable">
+                        <thead>
+                            <tr class="confluenceTr">
+                                #th("#IDENTIFIER" "Technical identifier of the requirement in ReqIF (SPEC-OBJECT)" "ID")
+                                #foreach ($attribute in $specObjectType.getUIAttributeDefinitions())
+                                    #th($!attribute.getIdentifier() $!attribute.getDescription() $!attribute.getName())
+                                #end
+                                #th("#TYPEID" "Technical identifier of the type in ReqIF (SPEC-OBJECT-TYPE)" "Type ID")
+                                #th("#TYPE" "Name of the type in ReqIF (SPEC-OBJECT-TYPE)" "Type name")
+                                #th("#DESCRIPTION" "DESCRIPTION attribute of the requirement in the ReqIF file" "Description")
+                                #th("#LASTCHANGE" "LAST-CHANGE attribute of the requirement in the ReqIF file" "Last change")
+                            </tr>
+                        </thead>
+                        <tbody>
+                            #foreach ($requirement in $reqifDocument.getRequirements($specObjectType.identifier, 6, $focus))
+                                #set ($hasReqirements = true)
+                                #if ($velocityCount == 6)
+                                    <tr class="confluenceTr">
+                                        #set ($colspan = 5 + $specObjectType.getUIAttributeDefinitions().size())
+                                        <td class="confluenceTd" colspan="$colspan"><i>(There are more requirements...)</i></td>
+                                    </tr>
+                                #else
+                                    <tr class="confluenceTr" #if ($requirement.isFocus()) style="background-color: #FFC400;" #end>
+                                        #td($requirement "#IDENTIFIER")
+                                        #foreach ($attribute in $specObjectType.getUIAttributeDefinitions())
+                                            #td($requirement $attribute.getIdentifier())
+                                        #end
+                                        #td($requirement "#TYPEID")
+                                        #td($requirement "#TYPE")
+                                        #td($requirement "#DESCRIPTION")
+                                        #td($requirement "#LASTCHANGE")
+                                    </tr>
+                                #end
+                            #end
+                        </tbody>
+                    </table>
+                </div>
+            #end
+            #if (!$hasReqirements)
+                <p>No requirements in this file.</p>
+            #end
+            #set ($typesWithoutRequirements = $reqifDocument.getSpecObjectTypesWithoutRequirements())
+            #if ($typesWithoutRequirements.size() == 1)
+                <p>'$typesWithoutRequirements.get(0).label' has no requirement.</p>
+            #elseif ($typesWithoutRequirements.size() > 1)
+                <h2>Types without requirements</h2>
+                <ul>
+                    #foreach ($specObjectType in $typesWithoutRequirements)
+                        <li>$specObjectType.label</li>
+                    #end
+                </ul>
+            #end
+
+            #if($hasEditPermission)
+                <div class="field-group buttons-area" style="margin-top: 30px">
+                    <button type="submit" class="aui-button aui-button-primary" id="button-import-requirements" name="action" value="save">Import requirements</button>
+                    <button class="aui-button open-deletion-options" style="transition: opacity 150ms">Delete...</button>
+                    ## I admit I'm out of my depth with this 'inline-flex', but that's the only way I could set the max-width, without buttons
+                    ## overflowing to the next line.
+                    <span id="deletion-options" style="overflow: hidden; max-width: 0; display: inline-flex; transition: all 500ms ease-in;">
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-requirements-and-document">Delete both</button>
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-requirements-only" title="Keep the attachment in Confluence">Delete requirements only</button>
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-document-only" title="Keep the requirments in Confluence">Delete attachment only</button>
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-label-only" title="Keep the requirments and the attachment, but remove the label so you don't see it in this 'ReqIF Import' anymore.">Just detach</button>
+                    </span>
+                    <aui-spinner size="medium" class="hidden">Please wait...</aui-spinner>
+                    <input type="hidden" value="" name="reqifConfigJson" id="reqifConfigJson"/>
+                </div>
+            #end
+        #end
+    </form>
+
+</body>
+
+#end
+
+</html>

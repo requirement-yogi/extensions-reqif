@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.playsql.extensions</groupId>
+    <artifactId>reqif</artifactId>
+    <version>2.2-SNAPSHOT</version>
+
+    <organization>
+        <name>Play SQL</name>
+        <url>http://www.play-sql.com/</url>
+    </organization>
+
+    <name>ReqIF Extension</name>
+    <description>
+        Extension to import ReqIF documents into Requirement Yogi.
+        Requires Requirements Yogi to work, please ensure Requirements Yogi is installed before using this plugin.
+        You can buy Requirements Yogi at https://marketplace.atlassian.com/apps/1212523/requirements-yogi
+    </description>
+    <packaging>atlassian-plugin</packaging>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly open-source license</comments>
+        </license>
+    </licenses>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.confluence</groupId>
+            <artifactId>confluence</artifactId>
+            <version>${confluence.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.atlassian.confluence.plugins</groupId>
+                    <artifactId>confluence-create-content-plugin</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.playsql</groupId>
+            <artifactId>requirementyogi</artifactId>
+            <version>${requirementsyogi.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.playsql</groupId>
+                    <artifactId>utils</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-amps-plugin</artifactId>
+                <version>6.2.11</version>
+                <extensions>true</extensions>
+                <configuration><!--
+                    <httpPort>1991</httpPort>
+                    <contextPath>/confluence</contextPath>-->
+                    <systemPropertyVariables>
+                        <upm.pac.disable>true</upm.pac.disable>
+                        <atlassian.dev.mode>${atlassian.dev.mode}</atlassian.dev.mode>
+                    </systemPropertyVariables>
+                    <enableFastdev>false</enableFastdev>
+                    <enableQuickReload>true</enableQuickReload>
+                    <instanceId>confluence</instanceId>
+                    <installPlugin>false</installPlugin>
+                    <cliPort>4338</cliPort>
+                    <httpPort>1990</httpPort>
+                    <contextPath>/confluence</contextPath>
+                    <!--<productDataPath>src/test/resources/emptydatapath</productDataPath>-->
+                    <!-- So AMPS doesn't set 'localhost' by default -->
+                    <!--<server>http://confluence.local</server>-->
+                    <additionalResourceFolders>${project.basedir}/src/main/resources</additionalResourceFolders>
+                    <startupTimeout>1000000</startupTimeout>
+                    <skipTests>${skipTests}</skipTests>
+                    <products>
+                        <product>
+                            <id>confluence</id>
+                            <instanceId>confluence</instanceId>
+                            <version>${confluence.version}</version>
+                            <dataVersion>${confluence.data.version}</dataVersion>
+                            <containerId>tomcat8x</containerId>
+                        </product>
+                    </products>
+                    <libArtifacts>
+                        <libArtifact>
+                            <groupId>mysql</groupId>
+                            <artifactId>mysql-connector-java</artifactId>
+                            <version>5.1.22</version>
+                        </libArtifact>
+                    </libArtifacts>
+                    <pluginArtifacts>
+                        <pluginArtifact>
+                            <groupId>com.atlassian.labs.plugins</groupId>
+                            <artifactId>quickreload</artifactId>
+                            <version>1.30.5</version>
+                        </pluginArtifact>
+                    </pluginArtifacts>
+                    <instructions>
+                        <Import-Package>
+                            org.w3c.dom;version="0.0.0",
+
+                            com.playsql.requirementyogi.ao;version="0.0.0",
+                            com.playsql.requirementyogi.api;version="0.0.0",
+
+                            org.eclipse.core.runtime;resolution:=optional;version="0.0.0",
+                            org.jdom*;version="0.0.0",
+                            org.xml.sax;version="0.0.0",
+                            org.xml.sax.helpers;version="0.0.0",
+                            com.atlassian.util.profiling;resolution:=optional;version="0.0.0",
+
+                            bucket.core.persistence.hibernate;version="0.0.0",
+                            bucket.user*;resolution:=optional;version="0.0.0",
+                            com.atlassian.applinks.api*;version="0.0.0",
+
+                            bucket.core.persistence.hibernate;version="0.0.0",
+                            bucket.user*;resolution:=optional;version="0.0.0",
+                            com.atlassian.bonnie;version="0.0.0",
+                            com.atlassian.cache;version="0.0.0",
+                            com.atlassian.applinks.api*;version="0.0.0",
+                            com.atlassian.config*;resolution:=optional;version="0.0.0",
+                            <!-- The real problem here is that 2 subpackages (createcontent and featurediscovery) have
+                                 versions 5.0.9 and 1.9 while the parent package com.atlassian.confluence requires 5.8.6 -->
+                            com.atlassian.confluence.*;version="0.0.0",
+                            com.atlassian.core.exception*;resolution:=optional;version="0.0.0",
+                            com.atlassian.core.task*;version="0.0.0",
+                            com.atlassian.core.user.preferences*;resolution:=optional;version="0.0.0",
+                            com.atlassian.core.util*;resolution:=optional;version="0.0.0",
+                            com.atlassian.event.api;version="0.0.0",
+                            com.atlassian.extras.common.log;version="0.0.0",
+                            com.atlassian.fugue*;resolution:=optional;version="0.0.0",
+                            com.atlassian.hibernate;version="0.0.0",
+                            com.atlassian.plugin.web;version="0.0.0",
+                            com.atlassian.plugin.webresource;version="0.0.0",
+                            com.atlassian.plugin;version="0.0.0",
+                            com.atlassian.plugins.rest.common.security;version="0.0.0",
+                            com.atlassian.renderer;version="0.0.0",
+                            com.atlassian.scheduler;version="0.0.0",
+                            com.atlassian.sal.api.*;version="0.0.0",
+                            com.atlassian.upm.api.*;version="0.0.0",
+                            com.atlassian.user;version="0.0.0",
+                            com.atlassian.util.concurrent;version="0.0.0",
+                            com.atlassian.xwork;version="0.0.0",
+                            com.atlassian.annotations;version="0.0.0",
+                            com.google.common.*;version="0.0.0",
+                            com.google.common.collect*;resolution:=optional;version="0.0.0",
+                            com.opensymphony.webwork.interceptor;version="0.0.0",
+                            com.opensymphony.webwork;version="0.0.0",
+                            com.atlassian.mywork.service;resolution:=optional;version="0.0.0",
+                            com.atlassian.mywork.model;resolution:=optional;version="0.0.0",
+
+                            javax.annotation*;version="0.0.0",
+                            javax.imageio;version="0.0.0",
+                            javax.lang.model*;version="0.0.0",
+                            javax.print.attribute;version="0.0.0",
+                            javax.print;version="0.0.0",
+                            javax.servlet.http;version="0.0.0",
+                            javax.servlet;version="0.0.0",
+                            javax.tools;version="0.0.0",
+                            javax.ws.rs.core;version="0.0.0",
+                            javax.ws.rs;version="0.0.0",
+                            javax.xml.bind.annotation;version="0.0.0",
+                            javax.xml.namespace;version="0.0.0",
+                            javax.xml.stream.events;version="0.0.0",
+                            javax.xml.stream;version="0.0.0",
+                            javax.xml.transform*;resolution:=optional;version="0.0.0",
+                            javax.xml.parsers;version="0.0.0",
+                            javax.xml.validation;version="0.0.0",
+                            net.java.ao.schema;version="0.0.0",
+                            net.java.ao;version="0.0.0",
+                            net.sf.hibernate;version="0.0.0",
+                            org.apache.commons.io;version="0.0.0",
+                            org.apache.commons.lang3*;version="0.0.0",
+                            org.apache.commons.lang;version="0.0.0",
+                            org.apache.http*;version="0.0.0",
+                            org.apache.log4j;version="0.0.0",
+                            org.apache.xerces.stax.events;version="0.0.0",
+                            org.codehaus.jackson.annotate;version="0.0.0",
+                            org.joda.time*;resolution:=optional;version="0.0.0",
+                            org.jsoup.nodes;version="0.0.0",
+                            org.jsoup.select;version="0.0.0",
+                            org.jsoup;version="0.0.0",
+                            org.springframework.beans.factory*;version="0.0.0",
+                            com.ctc.wstx.stax;resolution:=optional;version="0.0.0",
+                            com.atlassian.spring.container;version="0.0.0"
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>attach-bundle-artifact</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                    <type>jar</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.8</version>
+                <configuration>
+                    <!--
+                        You don't need to run the license plugin manually, it is part of the build (see executions).
+                        It retrieves all licenses of all dependencies into src/licenses/THIRD-PARTY-included-modules.txt
+
+                        NB: How to retrieve licenses on a new project:
+                        mvn clean license:download-licenses
+                    -->
+                    <projectName>Play SQL - ReqIF Import</projectName>
+                    <licenseName>apache_v2</licenseName>
+                    <organizationName>Play SQL S.A.S.U.</organizationName>
+                    <inceptionYear>2016</inceptionYear>
+
+                    <!-- Skips the goal download-licenses -->
+                    <skipDownloadLicenses>false</skipDownloadLicenses>
+                    <!-- This is an opensource project -->
+                    <skipUpdateLicense>true</skipUpdateLicense>
+                    <!-- The license of each module -->
+                    <licenseFile>${basedir}/src/license/LICENSE.txt</licenseFile>
+                    <useMissingFile>true</useMissingFile>
+                    <sortArtifactByName>true</sortArtifactByName>
+                    <!-- The file with the list of licenses, for those which can't be found automatically -->
+                    <missingFile>src/license/THIRD-PARTY.properties</missingFile>
+                    <!-- Same as 'missingFile' but in XML, probably -->
+                    <licensesConfigFile>src/license/licenses-manual.xml</licensesConfigFile>
+                    <!-- All licenses which could automatically be fetched. About the current module only.-->
+                    <licensesOutputFile>src/license/licenses-generated.xml</licensesOutputFile>
+                    <!-- Dump the text of all licenses of third parties. About the current module only. -->
+                    <licensesOutputDirectory>src/license/text</licensesOutputDirectory>
+                    <!-- A list of dependencies for the subtree and their licenses -->
+                    <thirdPartyFilename>THIRD-PARTY-included-modules.txt</thirdPartyFilename>
+                    <!-- Where to put the THIRD-PARTY.txt file -->
+                    <outputDirectory>${project.basedir}/src/license</outputDirectory>
+                    <!-- In the binary distribution, we exclude libraries which are only compiled against, as long
+                         as they're not GPL. Atlassian Confluence is considered with a developer license. -->
+                    <includedScopes>compile</includedScopes>
+                    <licenseMerges>
+                        <licenseMerge>Apache License 2.0|The Apache Software License, Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache 2</licenseMerge>
+                    </licenseMerges>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>download-licenses2</id>
+                        <!-- This phase is before 'package' so the license information is included in the binary
+                             distribution. -->
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>download-licenses</goal>
+                            <goal>update-file-header</goal>
+                            <goal>update-project-license</goal>
+                            <goal>add-third-party</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+
+    <properties>
+        <atlassian.dev.mode>false</atlassian.dev.mode>
+        <java.version>1.8</java.version>
+        <confluence.version>6.6.0</confluence.version>
+        <confluence.data.version>6.6.0</confluence.data.version>
+        <requirementsyogi.version>2.2-SNAPSHOT</requirementsyogi.version>
+        <skipTests>true</skipTests>
+    </properties>
+
+</project>
