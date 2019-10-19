@@ -2,12 +2,22 @@
 
 ## File required by bitbucket
 
-sed -i~ "/<servers>/ a\
-<server>\
-  <id>ry-releases</id>\
-  <username>${MAVEN_USERNAME}</username>\
-  <password>${MAVEN_PASSWORD}</password>\
-</server>" /usr/share/maven/conf/settings.xml
+find /usr/local -name "settings.xml"
+
+echo "Will pick:"
+find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1
+
+set -e
+set -u
+SETTINGS="$(find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1)"
+
+
+# sed -i~ "/<servers>/ a\
+# <server>\
+#   <id>ry-releases</id>\
+#   <username>${MAVEN_USERNAME}</username>\
+#   <password>${MAVEN_PASSWORD}</password>\
+# </server>" "$SETTINGS"
 
 sed -i "/<profiles>/ a\
 <profile>\
@@ -21,4 +31,4 @@ sed -i "/<profiles>/ a\
       <url>https://maven.play-sql.com/repository/ry-releases/</url>\
     </repository>\
   </repositories>\
-</profile>" /usr/share/maven/conf/settings.xml
+</profile>" "$SETTINGS"
