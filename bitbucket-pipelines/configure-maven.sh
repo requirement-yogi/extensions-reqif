@@ -4,7 +4,7 @@
 
 sed -i~ "/<servers>/ a\
 <server>\
-  <id>private-repo</id>\
+  <id>ry-releases</id>\
   <username>${MAVEN_USERNAME}</username>\
   <password>${MAVEN_PASSWORD}</password>\
 </server>" /usr/share/maven/conf/settings.xml
@@ -19,6 +19,10 @@ sed -i "/<profiles>/ a\
     <repository>\
       <id>atlassian-public</id>\
       <url>https://maven.atlassian.com/repository/public</url>\
+    </repository>\
+    <repository>\
+      <id>ry-releases</id>\
+      <url>https://maven.play-sql.com/repository/ry-releases/</url>\
     </repository>\
   </repositories>\
   <pluginRepositories>\
