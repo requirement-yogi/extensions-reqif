@@ -20,6 +20,7 @@
         Requires Requirements Yogi to work, please ensure Requirements Yogi is installed before using this plugin.
         You can buy Requirements Yogi at https://marketplace.atlassian.com/apps/1212523/requirements-yogi
     </description>
+
     <packaging>atlassian-plugin</packaging>
 
     <licenses>
@@ -266,7 +267,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>1.8</version>
+                <version>2.0.0</version>
                 <configuration>
                     <!--
                         You don't need to run the license plugin manually, it is part of the build (see executions).
@@ -278,12 +279,15 @@
                     <projectName>Play SQL - ReqIF Import</projectName>
                     <licenseName>apache_v2</licenseName>
                     <organizationName>Play SQL S.A.S.U.</organizationName>
-                    <inceptionYear>2016</inceptionYear>
+                    <inceptionYear>2019</inceptionYear>
 
                     <!-- Skips the goal download-licenses -->
                     <skipDownloadLicenses>false</skipDownloadLicenses>
-                    <!-- This is an opensource project -->
-                    <skipUpdateLicense>true</skipUpdateLicense>
+
+                    <!-- This IS an opensource project. We put the license at the top of each file. -->
+                    <licenseName>apache_v2</licenseName>
+                    <skipUpdateLicense>false</skipUpdateLicense>
+
                     <!-- The license of each module -->
                     <licenseFile>${basedir}/src/license/LICENSE.txt</licenseFile>
                     <useMissingFile>true</useMissingFile>
