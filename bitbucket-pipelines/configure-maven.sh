@@ -14,11 +14,8 @@ set -e
 set -u
 SETTINGS="$(find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1)"
 
-cat "$SETTINGS"
 echo
-echo
-echo "Modifying the file $SETTINGS"
-echo
+echo "=== Modifying the file $SETTINGS ==="
 echo
 
 cp ./bitbucket-pipelines/custom-settings.xml "$SETTINGS"
@@ -28,6 +25,4 @@ cp ./bitbucket-pipelines/custom-settings.xml "$SETTINGS"
 sed -i "s/\${MAVEN_USERNAME}/${MAVEN_USERNAME}/g" "$SETTINGS"
 sed -i "s/\${MAVEN_PASSWORD}/${MAVEN_PASSWORD}/g" "$SETTINGS"
 
-
 cat "$SETTINGS"
-
