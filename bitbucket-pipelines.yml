@@ -9,7 +9,10 @@ pipelines:
   default:
     - step:
         caches:
-          - maven
+          - atlas-mvn
         script: # Modify the commands below to build your repository.
           - bash bitbucket-pipelines/configure-maven.sh
           - atlas-mvn -B verify # -B batch mode makes Maven less verbose
+definitions:
+  caches:
+    atlas-mvn: /usr/share/atlassian-plugin-sdk-8.0.16/repository

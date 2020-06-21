@@ -1,37 +1,33 @@
 #!/bin/bash
 
-## File required by bitbucket
-
-find /usr/local -name "settings.xml"
+echo "Current dir:"
+pwd
+find .
+#echo "Full contents of the Atlassian SDK repo:"
+#find /usr/share/atlassian-plugin-sdk-*
 
 echo "Will pick the settings.xml among:"
+find /usr/local -name "settings.xml"
 find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml"
 
 set -e
 set -u
 SETTINGS="$(find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1)"
 
+cat "$SETTINGS"
+echo
+echo
 echo "Modifying the file $SETTINGS"
+echo
+echo
 
-sed -i~ "/<servers>/ a\
-<server>\
-  <id>ry-releases</id>\
-  <username>${MAVEN_USERNAME}</username>\
-  <password>${MAVEN_PASSWORD}</password>\
-</server>" "$SETTINGS"
+cp ./bitbucket-pipelines/custom-settings.xml "$SETTINGS"
 
-sed -i "/<profiles>/ a\
-<profile>\
-  <id>ry-releases</id>\
-  <activation>\
-    <activeByDefault>true</activeByDefault>\
-  </activation>\
-  <repositories>\
-    <repository>\
-      <id>ry-releases</id>\
-      <url>https://maven.play-sql.com/repository/ry-releases/</url>\
-    </repository>\
-  </repositories>\
-</profile>" "$SETTINGS"
+# ./bitbucket-pipelines/custom-settings.xml < "$SETTINGS"
+
+sed -i "s/\${MAVEN_USERNAME}/${MAVEN_USERNAME}/g" "$SETTINGS"
+sed -i "s/\${MAVEN_PASSWORD}/${MAVEN_PASSWORD}/g" "$SETTINGS"
+
 
 cat "$SETTINGS"
+
