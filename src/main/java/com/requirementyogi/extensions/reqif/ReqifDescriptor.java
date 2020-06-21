@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif;
+package com.requirementyogi.extensions.reqif;
 
 /*-
  * #%L
@@ -26,14 +26,16 @@ import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
-import com.playsql.requirementyogi.ao.ImportedRef;
-import com.playsql.requirementyogi.ao.Requirement;
-import com.playsql.requirementyogi.api.ExternalAPI;
-import com.playsql.requirementyogi.api.ExternalAPI.DocumentMetadata;
+import com.playsql.requirementyogi.api.beans.ImportedRef;
+import com.playsql.requirementyogi.api.beans.Requirement;
+import com.playsql.requirementyogi.api.documentimporter.DocumentId;
+import com.playsql.requirementyogi.api.documentimporter.Document;
+import com.playsql.requirementyogi.api.documentimporter.Descriptor;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 
-public class ReqifDescriptor implements ExternalAPI.Descriptor {
+public class ReqifDescriptor implements Descriptor {
 
     public static final String DESCRIPTOR_KEY = "reqif";
     private final ContentEntityManager ceoManager;
@@ -57,6 +59,21 @@ public class ReqifDescriptor implements ExternalAPI.Descriptor {
     }
 
     @Override
+    public String getDocumentationURL() {
+        return null;
+    }
+
+    @Override
+    public String getAdminURL() {
+        return null;
+    }
+
+    @Override
+    public int getVersion() {
+        return 1;
+    }
+
+    @Override
     public void fillDocumentDetails(Requirement bean, ImportedRef importedRef, Map<String, Object> stash) {
         String baseUrl = (String) stash.get("base-url");
         if (baseUrl == null) {
@@ -76,8 +93,12 @@ public class ReqifDescriptor implements ExternalAPI.Descriptor {
     }
 
     @Override
-    public DocumentMetadata getDocumentMetadata(String spaceKey, String type, String documentId) {
-        Attachment attachment = attachmentManager.getAttachment(Long.parseLong(documentId));
-        return new DocumentMetadata(documentId, null, attachment.getDisplayTitle(), applicationProperties.getBaseUrl(UrlMode.ABSOLUTE) + attachment.getUrlPath());
+    public Document getDocumentMetadata(@Nonnull DocumentId documentId) {
+        Attachment attachment = attachmentManager.getAttachment(Long.parseLong(documentId.getId()));
+        if (attachment != null) {
+            return new Document(documentId, attachment.getDisplayTitle(), applicationProperties.getBaseUrl(UrlMode.ABSOLUTE) + attachment.getUrlPath());
+        } else {
+            return new Document(documentId, "Attachment " + documentId.getId(), null);
+        }
     }
 }

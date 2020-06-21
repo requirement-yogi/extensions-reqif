@@ -5,16 +5,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.playsql.extensions</groupId>
+    <groupId>com.requirementyogi.extensions</groupId>
     <artifactId>reqif</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.5-SNAPSHOT</version>
 
     <organization>
         <name>Play SQL</name>
         <url>http://www.play-sql.com/</url>
     </organization>
 
-    <name>ReqIF Extension</name>
+    <name>RY extension - ReqIF</name>
     <description>
         Extension to import ReqIF documents into Requirement Yogi.
         Requires Requirements Yogi to work, please ensure Requirements Yogi is installed before using this plugin.
@@ -97,8 +97,8 @@
         <plugins>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-amps-plugin</artifactId>
-                <version>6.2.11</version>
+                <artifactId>amps-maven-plugin</artifactId>
+                <version>8.0.4</version>
                 <extensions>true</extensions>
                 <configuration><!--
                     <httpPort>1991</httpPort>
@@ -107,11 +107,9 @@
                         <upm.pac.disable>true</upm.pac.disable>
                         <atlassian.dev.mode>${atlassian.dev.mode}</atlassian.dev.mode>
                     </systemPropertyVariables>
-                    <enableFastdev>false</enableFastdev>
                     <enableQuickReload>true</enableQuickReload>
                     <instanceId>confluence</instanceId>
                     <installPlugin>false</installPlugin>
-                    <cliPort>4338</cliPort>
                     <httpPort>1990</httpPort>
                     <contextPath>/confluence</contextPath>
                     <!--<productDataPath>src/test/resources/emptydatapath</productDataPath>-->
@@ -149,6 +147,7 @@
 
                             com.playsql.requirementyogi.ao;version="0.0.0",
                             com.playsql.requirementyogi.api;version="0.0.0",
+                            com.playsql.requirementyogi.api*;version="0.0.0",
 
                             org.eclipse.core.runtime;resolution:=optional;version="0.0.0",
                             org.jdom*;version="0.0.0",
@@ -264,69 +263,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
-                <configuration>
-                    <!--
-                        You don't need to run the license plugin manually, it is part of the build (see executions).
-                        It retrieves all licenses of all dependencies into src/licenses/THIRD-PARTY-included-modules.txt
-
-                        NB: How to retrieve licenses on a new project:
-                        mvn clean license:download-licenses
-                    -->
-                    <projectName>Play SQL - ReqIF Import</projectName>
-                    <licenseName>apache_v2</licenseName>
-                    <organizationName>Play SQL S.A.S.U.</organizationName>
-                    <inceptionYear>2019</inceptionYear>
-
-                    <!-- Skips the goal download-licenses -->
-                    <skipDownloadLicenses>false</skipDownloadLicenses>
-
-                    <!-- This IS an opensource project. We put the license at the top of each file. -->
-                    <licenseName>apache_v2</licenseName>
-                    <skipUpdateLicense>false</skipUpdateLicense>
-
-                    <!-- The license of each module -->
-                    <licenseFile>${basedir}/src/license/LICENSE.txt</licenseFile>
-                    <useMissingFile>true</useMissingFile>
-                    <sortArtifactByName>true</sortArtifactByName>
-                    <!-- The file with the list of licenses, for those which can't be found automatically -->
-                    <missingFile>src/license/THIRD-PARTY.properties</missingFile>
-                    <!-- Same as 'missingFile' but in XML, probably -->
-                    <licensesConfigFile>src/license/licenses-manual.xml</licensesConfigFile>
-                    <!-- All licenses which could automatically be fetched. About the current module only.-->
-                    <licensesOutputFile>src/license/licenses-generated.xml</licensesOutputFile>
-                    <!-- Dump the text of all licenses of third parties. About the current module only. -->
-                    <licensesOutputDirectory>src/license/text</licensesOutputDirectory>
-                    <!-- A list of dependencies for the subtree and their licenses -->
-                    <thirdPartyFilename>THIRD-PARTY-included-modules.txt</thirdPartyFilename>
-                    <!-- Where to put the THIRD-PARTY.txt file -->
-                    <outputDirectory>${project.basedir}/src/license</outputDirectory>
-                    <!-- In the binary distribution, we exclude libraries which are only compiled against, as long
-                         as they're not GPL. Atlassian Confluence is considered with a developer license. -->
-                    <includedScopes>compile</includedScopes>
-                    <licenseMerges>
-                        <licenseMerge>Apache License 2.0|The Apache Software License, Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache 2</licenseMerge>
-                    </licenseMerges>
-
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>download-licenses2</id>
-                        <!-- This phase is before 'package' so the license information is included in the binary
-                             distribution. -->
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>download-licenses</goal>
-                            <goal>update-file-header</goal>
-                            <goal>update-project-license</goal>
-                            <goal>add-third-party</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -348,12 +284,101 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>2.0.0</version>
+                        <configuration>
+                            <!--
+                                You don't need to run the license plugin manually, it is part of the build (see executions).
+                                It retrieves all licenses of all dependencies into src/licenses/THIRD-PARTY-included-modules.txt
+
+                                NB: How to retrieve licenses on a new project:
+                                mvn clean license:download-licenses
+                            -->
+                            <projectName>Play SQL - ReqIF Import</projectName>
+                            <organizationName>Play SQL S.A.S.U.</organizationName>
+                            <inceptionYear>2019</inceptionYear>
+
+                            <!-- Skips the goal download-licenses -->
+                            <skipDownloadLicenses>false</skipDownloadLicenses>
+
+                            <!-- This IS an opensource project. We put the license at the top of each file. -->
+                            <licenseName>apache_v2</licenseName>
+                            <skipUpdateLicense>false</skipUpdateLicense>
+
+                            <!-- The license of each module -->
+                            <licenseFile>${basedir}/src/license/LICENSE.txt</licenseFile>
+                            <useMissingFile>true</useMissingFile>
+                            <sortArtifactByName>true</sortArtifactByName>
+                            <!-- The file with the list of licenses, for those which can't be found automatically -->
+                            <missingFile>src/license/THIRD-PARTY.properties</missingFile>
+                            <!-- Same as 'missingFile' but in XML, probably -->
+                            <licensesConfigFile>src/license/licenses-manual.xml</licensesConfigFile>
+                            <!-- All licenses which could automatically be fetched. About the current module only.-->
+                            <licensesOutputFile>src/license/licenses-generated.xml</licensesOutputFile>
+                            <!-- Dump the text of all licenses of third parties. About the current module only. -->
+                            <licensesOutputDirectory>src/license/text</licensesOutputDirectory>
+                            <!-- A list of dependencies for the subtree and their licenses -->
+                            <thirdPartyFilename>THIRD-PARTY-included-modules.txt</thirdPartyFilename>
+                            <!-- Where to put the THIRD-PARTY.txt file -->
+                            <outputDirectory>${project.basedir}/src/license</outputDirectory>
+                            <!-- In the binary distribution, we exclude libraries which are only compiled against, as long
+                                 as they're not GPL. Atlassian Confluence is considered with a developer license. -->
+                            <includedScopes>compile</includedScopes>
+                            <licenseMerges>
+                                <licenseMerge>Apache License 2.0|The Apache Software License, Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache 2</licenseMerge>
+                            </licenseMerges>
+
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>download-licenses2</id>
+                                <!-- This phase is before 'package' so the license information is included in the binary
+                                     distribution. -->
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>download-licenses</goal>
+                                    <goal>update-file-header</goal>
+                                    <goal>update-project-license</goal>
+                                    <goal>add-third-party</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <!-- To deploy, either run ./release.sh, or run: mvn clean deploy -Prelease
+
+            If you have a 401:Unauthorized error when doing 'mvn deploy', check that:
+             - You have set your user/password in the <servers> section of ~/.m2/settings.xml
+             - You have a section <extensions> with wagon-http 2.10, to fix a bug of maven-deploy-plugin.
+         -->
+        <repository>
+            <id>playsql.public.releases</id>
+            <url>https://maven.play-sql.com/repository/public-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>playsql.public.snapshots</id>
+            <url>https://maven.play-sql.com/repository/public-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <atlassian.dev.mode>false</atlassian.dev.mode>
         <java.version>1.8</java.version>
-        <confluence.version>6.6.0</confluence.version>
-        <confluence.data.version>6.6.0</confluence.data.version>
-        <requirementsyogi.version>2.2-SNAPSHOT</requirementsyogi.version>
+        <confluence.version>6.13.7</confluence.version>
+        <confluence.data.version>6.13.7</confluence.data.version>
+        <requirementsyogi.version>2.5.0</requirementsyogi.version>
         <skipTests>true</skipTests>
     </properties>
 

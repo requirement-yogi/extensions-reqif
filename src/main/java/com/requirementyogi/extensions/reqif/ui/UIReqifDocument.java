@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.ui;
+package com.requirementyogi.extensions.reqif.ui;
 
 /*-
  * #%L
@@ -22,16 +22,17 @@ package com.playsql.extensions.reqif.ui;
 
 import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.ReqifDescriptor;
-import com.playsql.extensions.reqif.ReqifUtils;
-import com.playsql.extensions.reqif.xml.ReqifConfig;
-import com.playsql.extensions.reqif.xml.ReqifConfig.ColumnMapping;
-import com.playsql.extensions.reqif.xml.ReqifConfig.SpecObjectMapping;
-import com.playsql.extensions.reqif.xml.ReqifXmlDocument;
-import com.playsql.requirementyogi.ao.ImportedRef;
-import com.playsql.requirementyogi.ao.Property;
-import com.playsql.requirementyogi.ao.Property.Type;
-import com.playsql.requirementyogi.api.ExternalAPI.DocumentAPI;
+import com.playsql.requirementyogi.api.beans.Requirement;
+import com.requirementyogi.extensions.reqif.ReqifDescriptor;
+import com.requirementyogi.extensions.reqif.ReqifUtils;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig.ColumnMapping;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig.SpecObjectMapping;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlDocument;
+import com.playsql.requirementyogi.api.beans.ImportedRef;
+import com.playsql.requirementyogi.api.beans.Property;
+import com.playsql.requirementyogi.api.beans.Property.Type;
+import com.playsql.requirementyogi.api.DocumentImporterAPI.RequirementPersister;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -110,14 +111,14 @@ public class UIReqifDocument {
     /**
      * Based on the config and the document, build the Requirement.java objects and call the api to import them
      */
-    public void importRequirements(DocumentAPI api, ReqifConfig config, String spaceKey, String documentId) {
+    public void importRequirements(RequirementPersister api, ReqifConfig config, String spaceKey, String documentId) {
         if (config == null) throw new NullPointerException("config");
         for (UIRequirement uiRequirement : getRequirements()) {
             String type = uiRequirement.get("#TYPEID").getValue();
             if (type != null) {
                 SpecObjectMapping mapping = config.getMapping(type);
                 if (mapping != null) {
-                    com.playsql.requirementyogi.ao.Requirement requirement = new com.playsql.requirementyogi.ao.Requirement();
+                    Requirement requirement = new Requirement();
                     List<Property> properties = Lists.newArrayList();
                     for (ColumnMapping columnMapping : mapping.getMappings()) {
                         UIRequirementValue value = uiRequirement.get(columnMapping.getIdentifier());

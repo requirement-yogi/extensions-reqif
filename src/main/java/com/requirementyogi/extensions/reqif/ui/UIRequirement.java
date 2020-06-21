@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.ui;
+package com.requirementyogi.extensions.reqif.ui;
 
 /*-
  * #%L
@@ -21,9 +21,9 @@ package com.playsql.extensions.reqif.ui;
  */
 
 import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.xml.ReqifConfig;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.SpecObject;
-import com.playsql.requirementyogi.ao.Requirement;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.SpecObject;
+import com.playsql.requirementyogi.api.beans.Requirement;
 
 import java.util.List;
 import java.util.Objects;

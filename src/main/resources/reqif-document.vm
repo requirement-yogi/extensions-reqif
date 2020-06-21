@@ -1,8 +1,8 @@
 <html>
 <head>
-    <title>$action.getText("com.playsql.extensions.reqif.ReqifAction.view.name-with-file", [ $attachment.displayTitle ])</title>
+    <title>$action.getText("com.requirementyogi.extensions.reqif.ReqifAction.view.name-with-file", [ $attachment.displayTitle ])</title>
     <meta name="decorator" content="main"/>
-    #requireResource("com.playsql.extensions.reqif:reqif-action")
+    #requireResource("com.requirementyogi.extensions.reqif:reqif-action")
 </head>
     #applyDecorator("root")
     #decoratorParam("helper" $action.helper)
@@ -86,7 +86,7 @@
         #if ($reqifDocument)
             #set ($hasReqirements = false)
             #foreach ($specObjectType in $reqifDocument.getSpecObjectTypesWithRequirements())
-                <h2>Object '$specObjectType.label'</h2>
+                <h2>Type '$specObjectType.label'</h2>
 
 
 
@@ -149,7 +149,7 @@
                         <thead>
                             <tr class="confluenceTr">
                                 #th("#IDENTIFIER" "Technical identifier of the requirement in ReqIF (SPEC-OBJECT)" "ID")
-                                #foreach ($attribute in $specObjectType.getUIAttributeDefinitions())
+                                #foreach ($attribute in $specObjectType.getUiAttributeDefinitions())
                                     #th($!attribute.getIdentifier() $!attribute.getDescription() $!attribute.getName())
                                 #end
                                 #th("#TYPEID" "Technical identifier of the type in ReqIF (SPEC-OBJECT-TYPE)" "Type ID")
@@ -163,13 +163,13 @@
                                 #set ($hasReqirements = true)
                                 #if ($velocityCount == 6)
                                     <tr class="confluenceTr">
-                                        #set ($colspan = 5 + $specObjectType.getUIAttributeDefinitions().size())
+                                        #set ($colspan = 5 + $specObjectType.getUiAttributeDefinitions().size())
                                         <td class="confluenceTd" colspan="$colspan"><i>(There are more requirements...)</i></td>
                                     </tr>
                                 #else
                                     <tr class="confluenceTr" #if ($requirement.isFocus()) style="background-color: #FFC400;" #end>
                                         #td($requirement "#IDENTIFIER")
-                                        #foreach ($attribute in $specObjectType.getUIAttributeDefinitions())
+                                        #foreach ($attribute in $specObjectType.getUiAttributeDefinitions())
                                             #td($requirement $attribute.getIdentifier())
                                         #end
                                         #td($requirement "#TYPEID")

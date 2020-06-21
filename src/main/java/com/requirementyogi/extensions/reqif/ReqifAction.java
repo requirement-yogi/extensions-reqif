@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif;
+package com.requirementyogi.extensions.reqif;
 
 /*-
  * #%L
@@ -48,12 +48,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.opensymphony.webwork.ServletActionContext;
-import com.playsql.extensions.reqif.managers.ReqifDocumentManager;
-import com.playsql.extensions.reqif.ui.UIReqifDocument;
-import com.playsql.extensions.reqif.xml.ReqifConfig;
-import com.playsql.requirementyogi.api.ExternalAPI;
-import com.playsql.requirementyogi.api.ImportResults;
-import com.playsql.requirementyogi.api.RequirementService;
+import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
+import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
+import com.playsql.requirementyogi.api.DocumentImporterAPI;
+import com.playsql.requirementyogi.api.RYSettingsAPI;
+import com.playsql.requirementyogi.api.RYWebInterfaceAPI;
+import com.playsql.requirementyogi.api.documentimporter.ImportResults;
+import com.playsql.requirementyogi.api.permissions.PermissionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -66,7 +68,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.playsql.extensions.reqif.managers.ReqifDocumentManager.*;
+import static com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager.*;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 
 public class ReqifAction extends AbstractSpaceAction {
@@ -76,8 +78,9 @@ public class ReqifAction extends AbstractSpaceAction {
     private SearchManager searchManager;
     private AttachmentManager attachmentManager;
     private PermissionManager permissionManager;
-    private RequirementService reqService;
-    private ExternalAPI externalAPI;
+    private RYSettingsAPI rySettingsAPI;
+    private DocumentImporterAPI externalAPI;
+    private RYWebInterfaceAPI ryWebInterfaceAPI;
     private ContextPathHolder contextPathHolder;
     private RenderedContentCleaner antisamy;
     private ReqifDocumentManager reqifDocumentManager;
@@ -203,6 +206,9 @@ public class ReqifAction extends AbstractSpaceAction {
                         log.debug("Error while importing the requirements of document " + attachment.getId(), e);
                         addActionError("Error while importing the requirements: " + e.getMessage());
                         return ERROR;
+                    } catch (PermissionException e) {
+                        addActionError("Permission error: " + e.getMessage());
+                        return ERROR;
                     }
                     List<List<String>> messages = importResults.getMessageBeanAsText();
                     if (messages.size() != 4)
@@ -257,7 +263,7 @@ public class ReqifAction extends AbstractSpaceAction {
         seeAttachmentsActionUrlPath = new StringBuilder(baseUrl).append("/requirementyogi/list.action")
                 .append("?key=").append(HtmlUtil.urlEncode(getSpaceKey()))
                 .append("&includeDeleted=false")
-                .append("&queryString=").append(HtmlUtil.urlEncode("excel = '" + attachment.getIdAsString() + "'"))
+                .append("&queryString=").append(HtmlUtil.urlEncode("imported = '" + attachment.getIdAsString() + "'"))
                 .toString();
         attachmentsUrlPath = baseUrl + container.getAttachmentsUrlPath();
 
@@ -325,7 +331,7 @@ public class ReqifAction extends AbstractSpaceAction {
         } catch (InvalidSearchException e) {
             throw new RuntimeException("Couldn't search for attachments with label " + ATTACHMENT_LABEL, e);
         }
-        String urlPrefix = reqService.getUrlPrefix(null);
+        String urlPrefix = ryWebInterfaceAPI.getUrlPrefix(null);
 
         for (Long attachmentId : attachmentIds) {
             Attachment attachment = attachmentManager.getAttachment(attachmentId);
@@ -464,7 +470,7 @@ public class ReqifAction extends AbstractSpaceAction {
     }
 
     public String getNavbarHtml(String tab) {
-        return externalAPI.getNavbarHtml(getSpaceKey(), tab, this);
+        return ryWebInterfaceAPI.getNavbarHtml(getSpaceKey(), tab, this);
     }
 
     public void setId(Long id) {
@@ -531,16 +537,12 @@ public class ReqifAction extends AbstractSpaceAction {
         this.attachmentManager = attachmentManager;
     }
 
-    public void setReqService(RequirementService reqService) {
-        this.reqService = reqService;
-    }
-
     public List<Map<String, Object>> getReqifAttachments() {
         return reqifAttachments;
     }
 
     public Integer getLimitForImport() {
-        return externalAPI.getLimitForImport();
+        return rySettingsAPI.getLimitForImport();
     }
 
     @Override
@@ -552,7 +554,7 @@ public class ReqifAction extends AbstractSpaceAction {
         return reqifDocument;
     }
 
-    public void setExternalAPI(ExternalAPI externalAPI) {
+    public void setExternalAPI(DocumentImporterAPI externalAPI) {
         this.externalAPI = externalAPI;
     }
 
@@ -622,6 +624,14 @@ public class ReqifAction extends AbstractSpaceAction {
 
     public void setAtl_token(String atl_token) {
         this.atl_token = atl_token;
+    }
+
+    public void setRyWebInterfaceAPI(RYWebInterfaceAPI ryWebInterfaceAPI) {
+        this.ryWebInterfaceAPI = ryWebInterfaceAPI;
+    }
+
+    public void setRySettingsAPI(RYSettingsAPI rySettingsAPI) {
+        this.rySettingsAPI = rySettingsAPI;
     }
 
     public String getPreviousPageUrl() {

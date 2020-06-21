@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.ui;
+package com.requirementyogi.extensions.reqif.ui;
 
 /*-
  * #%L
@@ -20,32 +20,33 @@ package com.playsql.extensions.reqif.ui;
  * #L%
  */
 
-public class UIAttributeDefinition {
-    private String identifier;
-    private String name;
-    private String description;
+import java.util.Objects;
 
-    public String getIdentifier() {
-        return identifier;
+public class UIRequirementValue {
+    private String key;
+    private String value;
+    // XHTML or null
+    private String type;
+
+    public UIRequirementValue(String key, String value, boolean xhtml) {
+        this.key = key;
+        this.value = value;
+        this.type = xhtml ? "XHTML" : null;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public boolean isXhtml() {
+        return Objects.equals(type, "XHTML");
     }
 
-    public String getName() {
-        return name;
+    public String getKey() {
+        return key;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getValue() {
+        return value;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getType() {
+        return type;
     }
 }

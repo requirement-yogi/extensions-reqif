@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.managers;
+package com.requirementyogi.extensions.reqif.managers;
 
 /*
  * #%L
@@ -33,13 +33,15 @@ import com.atlassian.event.api.EventPublisher;
 import com.atlassian.extras.common.log.Logger;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.playsql.extensions.reqif.ReqifDescriptor;
-import com.playsql.extensions.reqif.ReqifUtils;
-import com.playsql.extensions.reqif.ui.UIReqifDocument;
-import com.playsql.extensions.reqif.xml.ReqifConfig;
-import com.playsql.extensions.reqif.xml.ReqifXmlHandler;
-import com.playsql.requirementyogi.api.ExternalAPI;
-import com.playsql.requirementyogi.api.ImportResults;
+import com.requirementyogi.extensions.reqif.ReqifDescriptor;
+import com.requirementyogi.extensions.reqif.ReqifUtils;
+import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlHandler;
+import com.playsql.requirementyogi.api.DocumentImporterAPI;
+import com.playsql.requirementyogi.api.documentimporter.DocumentId;
+import com.playsql.requirementyogi.api.documentimporter.ImportResults;
+import com.playsql.requirementyogi.api.permissions.PermissionException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -53,21 +55,21 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class ReqifDocumentManager implements InitializingBean, DisposableBean {
-    private final static Logger.Log log = Logger.getInstance(ReqifDocumentManager.class);
+    private static final Logger.Log log = Logger.getInstance(ReqifDocumentManager.class);
 
-    public final static String ATTACHMENT_LABEL = "ry-reqif-import";
-    public final static String[] ATTACHMENT_EXTENSIONS = {"reqif"};
-    public static final String SETTINGS_ROOT = "com.playsql.extensions.reqif.";
+    public static final String ATTACHMENT_LABEL = "ry-reqif-import";
+    public static final String[] ATTACHMENT_EXTENSIONS = {"reqif"};
+    public static final String SETTINGS_ROOT = "com.requirementyogi.extensions.reqif.";
     public static final String SETTINGS_ATTACHMENT = SETTINGS_ROOT + "attachment.";
 
     private final RenderedContentCleaner antisamy;
     private final AttachmentManager attachmentManager;
     private final PluginSettingsFactory pluginSettingsFactory;
-    private final ExternalAPI externalAPI;
+    private final DocumentImporterAPI externalAPI;
     private final LabelManager labelManager;
     private final EventPublisher eventPublisher;
 
-    public ReqifDocumentManager(ExternalAPI externalAPI,
+    public ReqifDocumentManager(DocumentImporterAPI externalAPI,
                                 RenderedContentCleaner antisamy,
                                 AttachmentManager attachmentManager,
                                 PluginSettingsFactory pluginSettingsFactory,
@@ -180,7 +182,7 @@ public class ReqifDocumentManager implements InitializingBean, DisposableBean {
         }
     }
 
-    public ImportResults importDocument(Attachment attachment, ReqifConfig reqifConfig, ConfluenceUser user) throws ParseException {
+    public ImportResults importDocument(Attachment attachment, ReqifConfig reqifConfig, ConfluenceUser user) throws ParseException, PermissionException {
         if (reqifConfig == null) throw new NullPointerException("config");
         InputStream attachmentData = attachmentManager.getAttachmentData(attachment);
         try {
@@ -188,7 +190,7 @@ public class ReqifDocumentManager implements InitializingBean, DisposableBean {
             String documentId = attachment.getIdAsString();
             String spaceKey = attachment.getSpaceKey();
             UIReqifDocument reqifDocument = parse(attachmentData);
-            return externalAPI.importDocument(spaceKey, ReqifDescriptor.DESCRIPTOR_KEY, documentId, documentTitle, user, (api) -> {
+            return externalAPI.importDocument(new DocumentId(ReqifDescriptor.DESCRIPTOR_KEY, spaceKey, documentId), documentTitle, user, (api) -> {
                 reqifDocument.importRequirements(api, reqifConfig, spaceKey, documentId);
             });
         } finally {
@@ -212,9 +214,13 @@ public class ReqifDocumentManager implements InitializingBean, DisposableBean {
             String documentTitle = attachment.getDisplayTitle();
             String documentId = attachment.getIdAsString();
             String spaceKey = attachment.getSpaceKey();
-            externalAPI.importDocument(spaceKey, ReqifDescriptor.DESCRIPTOR_KEY, documentId, documentTitle, user, (api) -> {
-                // Do nothing, it will delete all requirements
-            });
+            try {
+                externalAPI.importDocument(new DocumentId(ReqifDescriptor.DESCRIPTOR_KEY, spaceKey, documentId), documentTitle, user, (api) -> {
+                    // Do nothing, it will delete all requirements
+                });
+            } catch (PermissionException e) {
+                throw new RuntimeException("The user doesn't have the permissions to delete those requirements.");
+            }
             removeLabel = true;
         }
 

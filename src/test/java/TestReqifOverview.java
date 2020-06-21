@@ -19,15 +19,14 @@
  */
 import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.managers.ReqifDocumentManager;
-import com.playsql.extensions.reqif.managers.ReqifDocumentManager.ParseException;
-import com.playsql.extensions.reqif.ui.UIReqifDocument;
-import com.playsql.extensions.reqif.ui.UIRequirement;
-import com.playsql.extensions.reqif.ui.UIRequirementValue;
-import com.playsql.requirementyogi.ao.Ref;
-import com.playsql.requirementyogi.ao.Requirement;
-import com.playsql.requirementyogi.ao.RequirementRef;
-import com.playsql.utils.BaseUtils.Clock;
+import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
+import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager.ParseException;
+import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
+import com.requirementyogi.extensions.reqif.ui.UIRequirement;
+import com.requirementyogi.extensions.reqif.ui.UIRequirementValue;
+import com.playsql.requirementyogi.api.beans.Ref;
+import com.playsql.requirementyogi.api.beans.Requirement;
+import com.playsql.requirementyogi.api.beans.RequirementRef;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestReqifOverview {
-    private final static String REQIF_FILE_LOCATION = "test.reqif";
+    private static final String REQIF_FILE_LOCATION = "test.reqif";
     private ReqifDocumentManager reqifDocumentManager;
 
     @Mock RenderedContentCleaner antisamy = Mockito.mock(RenderedContentCleaner.class);

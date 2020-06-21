@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.xml;
+package com.requirementyogi.extensions.reqif.xml;
 
 /*-
  * #%L
@@ -22,10 +22,10 @@ package com.playsql.extensions.reqif.xml;
 
 import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.managers.ReqifDocumentManager;
-import com.playsql.extensions.reqif.ui.UIReqifDocument;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.Unknown;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.XmlElement;
+import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
+import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.Unknown;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.XmlElement;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

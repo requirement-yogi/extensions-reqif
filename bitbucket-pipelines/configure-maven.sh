@@ -4,20 +4,21 @@
 
 find /usr/local -name "settings.xml"
 
-echo "Will pick:"
-find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1
+echo "Will pick the settings.xml among:"
+find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml"
 
 set -e
 set -u
 SETTINGS="$(find /usr/share/atlassian-plugin-sdk-*/apache-maven-*/conf/ -name "settings.xml" | head -n 1)"
 
+echo "Modifying the file $SETTINGS"
 
-# sed -i~ "/<servers>/ a\
-# <server>\
-#   <id>ry-releases</id>\
-#   <username>${MAVEN_USERNAME}</username>\
-#   <password>${MAVEN_PASSWORD}</password>\
-# </server>" "$SETTINGS"
+sed -i~ "/<servers>/ a\
+<server>\
+  <id>ry-releases</id>\
+  <username>${MAVEN_USERNAME}</username>\
+  <password>${MAVEN_PASSWORD}</password>\
+</server>" "$SETTINGS"
 
 sed -i "/<profiles>/ a\
 <profile>\
@@ -32,3 +33,5 @@ sed -i "/<profiles>/ a\
     </repository>\
   </repositories>\
 </profile>" "$SETTINGS"
+
+cat "$SETTINGS"

@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.xml;
+package com.requirementyogi.extensions.reqif.xml;
 
 /*-
  * #%L
@@ -150,6 +150,14 @@ public class ReqifXmlElements {
 
         protected T addDefinitionNotFound(String type, String identifier) {
             throw new RuntimeException("Reference not found: " + type + " " + identifier);
+        }
+
+        public String toString() {
+            if (original != null) {
+                return "<ref " + original.toString() + ">";
+            } else {
+                return "<ref " + sb.toString() + ">";
+            }
         }
     }
 
@@ -370,6 +378,10 @@ public class ReqifXmlElements {
             if (child instanceof SpecObjectTypeRef) {
                 this.ref = (SpecObjectTypeRef) child;
             }
+        }
+
+        public String toString() {
+            return localName + " ref=" + (ref != null ? ref.toString() : "null");
         }
     }
 

@@ -50,7 +50,7 @@
     <xwork name="MVC Actions" key="xwork-reqif">
         <description>MVC Actions for all pages provided by the plugin</description>
         <package name="reqif" extends="default" namespace="/reqif">
-            <action name="view" class="com.playsql.extensions.reqif.ReqifAction" method="doDefault">
+            <action name="view" class="com.requirementyogi.extensions.reqif.ReqifAction" method="doDefault">
                 <interceptor-ref name="defaultStack" />
                 <result name="show-attachment-list" type="velocity">/reqif-list.vm</result>
                 <result name="show-one-attachment" type="velocity">/reqif-document.vm</result>
@@ -59,10 +59,14 @@
         </package>
     </xwork>
 
-    <component key="reqifDocumentManager" name="ReqIF Document Manager" class="com.playsql.extensions.reqif.managers.ReqifDocumentManager"/>
+    <component key="reqifDocumentManager" name="ReqIF Document Manager" class="com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager"/>
 
     <!-- Classes implemented by the host application (or by Requirement Yogi and made public) -->
-    <component-import key="external-api" name="External API" interface="com.playsql.requirementyogi.api.ExternalAPI"/>
+    <component-import key="external-api" name="Document Importer API" interface="com.playsql.requirementyogi.api.DocumentImporterAPI"/>
+    <component-import key="web-interface-api" name="Web UI API" interface="com.playsql.requirementyogi.api.RYWebInterfaceAPI"/>
+    <component-import key="search-api" name="Search API" interface="com.playsql.requirementyogi.api.SearchAPI"/>
+    <component-import key="ry-settings-api" name="Settings API" interface="com.playsql.requirementyogi.api.RYSettingsAPI"/>
+    <component-import key="ry-permissions-api" name="Permission API" interface="com.playsql.requirementyogi.api.PermissionAPI"/>
     <component-import key="requirement-service" name="Requirement service" interface="com.playsql.requirementyogi.api.RequirementService"/>
     <component-import key="plugin-settings-factory" name="Plugin settings" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory"/>
     <component-import key="rendered-content-cleaner" name="Rendered content cleaner" interface="com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner"/>
@@ -71,9 +75,9 @@
 
     <rest key="rest" path="/reqifimport" version="1" name="REST resources for ReqIF">
         <description>REST API for reqif import</description>
-        <package>com.playsql.extensions.reqif.rest</package>
+        <package>com.requirementyogi.extensions.reqif.rest</package>
     </rest>
 
-    <requirementyogi-extension key="descriptor" class="com.playsql.extensions.reqif.ReqifDescriptor" />
+    <requirementyogi-extension key="descriptor" class="com.requirementyogi.extensions.reqif.ReqifDescriptor" />
 
 </atlassian-plugin>

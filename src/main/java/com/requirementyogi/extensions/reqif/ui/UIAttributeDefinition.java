@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.ui;
+package com.requirementyogi.extensions.reqif.ui;
 
 /*-
  * #%L
@@ -20,19 +20,10 @@ package com.playsql.extensions.reqif.ui;
  * #L%
  */
 
-import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.SpecObjectType;
-
-import java.util.List;
-
-/**
- * Represents a {@link SpecObjectType}, but hides the XML implementation details, and makes it
- * ready to be used by a .vm file.
- */
-public class UIRequirementType {
+public class UIAttributeDefinition {
     private String identifier;
-    private String label;
-    List<UIAttributeDefinition> uiAttributeDefinitions = Lists.newArrayList();
+    private String name;
+    private String description;
 
     public String getIdentifier() {
         return identifier;
@@ -42,19 +33,19 @@ public class UIRequirementType {
         this.identifier = identifier;
     }
 
-    public String getLabel() {
-        return label;
+    public String getName() {
+        return name;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<UIAttributeDefinition> getUiAttributeDefinitions() {
-        return uiAttributeDefinitions;
+    public String getDescription() {
+        return description;
     }
 
-    public void setUiAttributeDefinitions(List<UIAttributeDefinition> uiAttributeDefinitions) {
-        this.uiAttributeDefinitions = uiAttributeDefinitions;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

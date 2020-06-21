@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif.xml;
+package com.requirementyogi.extensions.reqif.xml;
 
 /*-
  * #%L
@@ -21,8 +21,8 @@ package com.playsql.extensions.reqif.xml;
  */
 
 import com.google.common.collect.Lists;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.AttributeDefinition;
-import com.playsql.extensions.reqif.xml.ReqifXmlElements.SpecObjectType;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.AttributeDefinition;
+import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.SpecObjectType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

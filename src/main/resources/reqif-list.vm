@@ -1,8 +1,8 @@
 <html>
 <head>
-    <title>$action.getText("com.playsql.extensions.reqif.ReqifAction.action.name")</title>
+    <title>$action.getText("com.requirementyogi.extensions.reqif.ReqifAction.action.name")</title>
     <meta name="decorator" content="main"/>
-    #requireResource("com.playsql.extensions.reqif:reqif-action")
+    #requireResource("com.requirementyogi.extensions.reqif:reqif-action")
 
 </head>
     #applyDecorator("root")

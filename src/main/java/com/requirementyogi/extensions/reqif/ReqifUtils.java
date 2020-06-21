@@ -1,4 +1,4 @@
-package com.playsql.extensions.reqif;
+package com.requirementyogi.extensions.reqif;
 
 /*-
  * #%L
