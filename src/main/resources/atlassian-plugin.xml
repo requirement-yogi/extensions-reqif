@@ -23,12 +23,12 @@
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
 
-<!--        <param name="plugin-icon">img/rytest-16x.png</param>
-        <param name="plugin-logo">img/rytest-72x.png</param>
+        <param name="plugin-icon">img/reqif-extension-v2-16px.png</param>
+        <param name="plugin-logo">img/reqif-extension-v2-72px.png</param>
 
-        <param name="plugin-banner">img/rytest-banner.png</param>
+        <param name="plugin-banner">img/reqif-banner-v1-1120x548.jpeg</param>
         <param name="vendor-icon">img/playsql-16px.png</param>
-        <param name="vendor-logo">img/playsql-72px.png</param>-->
+        <param name="vendor-logo">img/playsql-72px.png</param>
     </plugin-info>
 
     <resource key="img" name="img/" type="download" location="img" />
