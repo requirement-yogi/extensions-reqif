@@ -25,8 +25,8 @@ Sure, as long as you accept the license. Send us a pull request.
 
 # Is it open-source ?
 
-Yes. The license is APL v2. It is business-friendly, meaning you can keep your project internally, or publish it
-as part of a closed-source project (as long as you publish the infos required by the license), etc.
+Yes. The license is APL v2, except for the image files. It is business-friendly, meaning you can keep your project
+internally, or publish it as part of a closed-source project (as long as you publish the infos required by the license), etc.
 
 The license text should be available [in this repository](src/license/LICENSE.txt)
  or (on the Apache website](https://www.apache.org/licenses/LICENSE-2.0)
