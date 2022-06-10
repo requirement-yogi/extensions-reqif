@@ -17,6 +17,7 @@
  * limitations under the License.
  * #L%
  */
+
 import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.google.common.collect.Lists;
 import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
@@ -24,16 +25,13 @@ import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager.ParseE
 import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
 import com.requirementyogi.extensions.reqif.ui.UIRequirement;
 import com.requirementyogi.extensions.reqif.ui.UIRequirementValue;
-import com.playsql.requirementyogi.api.beans.Ref;
-import com.playsql.requirementyogi.api.beans.Requirement;
-import com.playsql.requirementyogi.api.beans.RequirementRef;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.*;
 import java.net.URI;
@@ -60,15 +58,6 @@ public class TestReqifOverview {
     @Before
     public void setup() {
         reqifDocumentManager = new ReqifDocumentManager(null, antisamy, null, null, null, null);
-    }
-
-    public Requirement createRequirement(String spaceKey, String key, Ref origin, List<RequirementRef> dependencies) {
-        Requirement requirement = new Requirement();
-        requirement.setSpaceKey(spaceKey);
-        requirement.setKey(key);
-        requirement.setOrigin(origin);
-        requirement.setDependencies(dependencies);
-        return requirement;
     }
 
     @Test
@@ -103,14 +92,14 @@ public class TestReqifOverview {
                 UIReqifDocument reqifDocument = reqifDocumentManager.parse(inputStream);
                 List<UIRequirement> requirements = reqifDocument.getRequirements();
 
-                System.out.print(requirements.size() + " requirements \tin " +
-                    reqifDocument.getSpecObjectTypes().size() + " type(s) \tin " +
-                    TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) + "ms");
+                // System.out.print(requirements.size() + " requirements \tin " +
+                //     reqifDocument.getSpecObjectTypes().size() + " type(s) \tin " +
+                //     TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) + "ms");
 
                 assertThat("File " + file.getName(), requirements, is(not(empty())));
                 hasFile = true;
             } finally {
-                System.out.println("\t\tfor file " + file.getName());
+                // System.out.println("\t\tfor file " + file.getName());
             }
         }
         assertTrue("Files were parsed", hasFile);

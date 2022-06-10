@@ -48,7 +48,7 @@
                 </repository>
                 <repository>
                     <id>ry-releases</id>
-                    <url>https://maven.play-sql.com/repository/public-release/</url>
+                    <url>https://maven.dev.requirementyogi.com/repository/public-release/</url>
                 </repository>
             </repositories>
             <pluginRepositories>

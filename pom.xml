@@ -2,16 +2,16 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.requirementyogi.extensions</groupId>
     <artifactId>reqif</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <organization>
-        <name>Play SQL</name>
-        <url>http://www.requirementyogi.com</url>
+        <name>Requirement Yogi</name>
+        <url>https://www.requirementyogi.com</url>
     </organization>
 
     <name>RY extension - ReqIF</name>
@@ -36,7 +36,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -53,12 +59,16 @@
                     <groupId>com.atlassian.confluence.plugins</groupId>
                     <artifactId>confluence-create-content-plugin</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-library</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>3.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -88,8 +98,14 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <version>2.8.6</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.10.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -98,7 +114,7 @@
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>amps-maven-plugin</artifactId>
-                <version>8.0.4</version>
+                <version>8.4.0</version>
                 <extensions>true</extensions>
                 <configuration><!--
                     <httpPort>1991</httpPort>
@@ -215,6 +231,7 @@
                             net.java.ao.schema;version="0.0.0",
                             net.java.ao;version="0.0.0",
                             net.sf.hibernate;version="0.0.0",
+                            org.apache.commons.text;version="0.0.0",
                             org.apache.commons.io;version="0.0.0",
                             org.apache.commons.lang3*;version="0.0.0",
                             org.apache.commons.lang;version="0.0.0",
@@ -301,8 +318,8 @@
                                 NB: How to retrieve licenses on a new project:
                                 mvn clean license:download-licenses
                             -->
-                            <projectName>Play SQL - ReqIF Import</projectName>
-                            <organizationName>Play SQL S.A.S.U.</organizationName>
+                            <projectName>Requirement Yogi - ReqIF Import</projectName>
+                            <organizationName>Requirement Yogi S.A.S.U.</organizationName>
                             <inceptionYear>2019</inceptionYear>
 
                             <!-- Skips the goal download-licenses -->
@@ -359,26 +376,29 @@
     <distributionManagement>
         <!-- To deploy, either run ./release.sh, or run: mvn clean deploy -Prelease
 
+            You may have trouble connecting since we've closed the ports from the public. Please ask us and
+            we can open them for you.
+
             If you have a 401:Unauthorized error when doing 'mvn deploy', check that:
              - You have set your user/password in the <servers> section of ~/.m2/settings.xml
              - You have a section <extensions> with wagon-http 2.10, to fix a bug of maven-deploy-plugin.
          -->
         <repository>
             <id>playsql.public.releases</id>
-            <url>https://maven.play-sql.com/repository/public-release</url>
+            <url>https://maven.dev.requirementyogi.com/repository/public-release</url>
         </repository>
         <snapshotRepository>
             <id>playsql.public.snapshots</id>
-            <url>https://maven.play-sql.com/repository/public-snapshots</url>
+            <url>https://maven.dev.requirementyogi.com/repository/public-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
     <properties>
         <atlassian.dev.mode>false</atlassian.dev.mode>
         <java.version>1.8</java.version>
-        <confluence.version>6.13.7</confluence.version>
-        <confluence.data.version>6.13.7</confluence.data.version>
-        <requirementsyogi.version>2.5.0</requirementsyogi.version>
+        <confluence.version>7.13.0</confluence.version>
+        <confluence.data.version>7.13.0</confluence.data.version>
+        <requirementsyogi.version>3.3-SNAPSHOT</requirementsyogi.version>
         <skipTests>true</skipTests>
     </properties>
 

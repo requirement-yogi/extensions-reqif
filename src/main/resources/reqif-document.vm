@@ -207,8 +207,8 @@
                     <span id="deletion-options" style="overflow: hidden; max-width: 0; display: inline-flex; transition: all 500ms ease-in;">
                         <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-requirements-and-document">Delete both</button>
                         <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-requirements-only" title="Keep the attachment in Confluence">Delete requirements only</button>
-                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-document-only" title="Keep the requirments in Confluence">Delete attachment only</button>
-                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-label-only" title="Keep the requirments and the attachment, but remove the label so you don't see it in this 'ReqIF Import' anymore.">Just detach</button>
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-document-only" title="Keep the requirements in Confluence">Delete attachment only</button>
+                        <button type="submit" class="aui-button ry-tooltipable" name="action" value="delete-label-only" title="Keep the requirements and the attachment, but remove the label so you don't see it in this 'ReqIF Import' anymore.">Just detach</button>
                     </span>
                     <aui-spinner size="medium" class="hidden">Please wait...</aui-spinner>
                     <input type="hidden" value="" name="reqifConfigJson" id="reqifConfigJson"/>

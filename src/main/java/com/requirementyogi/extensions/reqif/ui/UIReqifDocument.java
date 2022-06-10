@@ -22,6 +22,9 @@ package com.requirementyogi.extensions.reqif.ui;
 
 import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.google.common.collect.Lists;
+import com.playsql.requirementyogi.api.DocumentImporterAPI.RequirementPersister;
+import com.playsql.requirementyogi.api.beans.ImportedRef;
+import com.playsql.requirementyogi.api.beans.Property;
 import com.playsql.requirementyogi.api.beans.Requirement;
 import com.requirementyogi.extensions.reqif.ReqifDescriptor;
 import com.requirementyogi.extensions.reqif.ReqifUtils;
@@ -29,15 +32,14 @@ import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig.ColumnMapping;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig.SpecObjectMapping;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlDocument;
-import com.playsql.requirementyogi.api.beans.ImportedRef;
-import com.playsql.requirementyogi.api.beans.Property;
-import com.playsql.requirementyogi.api.beans.Property.Type;
-import com.playsql.requirementyogi.api.DocumentImporterAPI.RequirementPersister;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.playsql.requirementyogi.api.beans.enums.PropertyType.INLINE;
+import static com.playsql.requirementyogi.search.enums.CriterionKey.PROPERTY_SEPARATOR;
 
 /**
  * An object for the UI which can return all the information of the parsed document.
@@ -132,20 +134,20 @@ public class UIReqifDocument {
                                 } else {
                                     requirement.setHtmlExcerpt(existingHtml + escape(value.getValue()));
                                 }
-                            } else if (columnMapping.getTarget().startsWith("@")) {
+                            } else if (columnMapping.getTarget().startsWith(PROPERTY_SEPARATOR)) {
                                 String propertyName = columnMapping.getTarget().substring(1);
                                 Property property;
                                 if (value.isXhtml()) {
-                                    property = new Property(Type.AUTO, propertyName, sanitize(value.getValue()));
+                                    property = new Property(INLINE, propertyName, sanitize(value.getValue()));
                                 } else {
-                                    property = new Property(Type.AUTO, propertyName, escape(value.getValue()));
+                                    property = new Property(INLINE, propertyName, escape(value.getValue()));
                                 }
                                 properties.add(property);
                             }
                         }
                     }
                     if (StringUtils.isNotBlank(mapping.getCategory())) {
-                        properties.add(new Property(Type.AUTO, Property.KEY_CATEGORY, escape(mapping.getCategory())));
+                        properties.add(new Property(INLINE, Property.KEY_CATEGORY, escape(mapping.getCategory())));
                     }
                     requirement.setProperties(properties);
                     requirement.setSpaceKey(spaceKey);

@@ -22,7 +22,6 @@ package com.requirementyogi.extensions.reqif;
 
 import bucket.core.persistence.hibernate.HibernateHandle;
 import com.atlassian.bonnie.Handle;
-import com.atlassian.confluence.content.render.xhtml.RenderedContentCleaner;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.labels.Label;
@@ -48,14 +47,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.opensymphony.webwork.ServletActionContext;
-import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
-import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
-import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
-import com.playsql.requirementyogi.api.DocumentImporterAPI;
 import com.playsql.requirementyogi.api.RYSettingsAPI;
 import com.playsql.requirementyogi.api.RYWebInterfaceAPI;
 import com.playsql.requirementyogi.api.documentimporter.ImportResults;
 import com.playsql.requirementyogi.api.permissions.PermissionException;
+import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
+import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
+import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -79,10 +77,8 @@ public class ReqifAction extends AbstractSpaceAction {
     private AttachmentManager attachmentManager;
     private PermissionManager permissionManager;
     private RYSettingsAPI rySettingsAPI;
-    private DocumentImporterAPI externalAPI;
     private RYWebInterfaceAPI ryWebInterfaceAPI;
     private ContextPathHolder contextPathHolder;
-    private RenderedContentCleaner antisamy;
     private ReqifDocumentManager reqifDocumentManager;
     private XsrfTokenGenerator xsrf;
 
@@ -171,7 +167,7 @@ public class ReqifAction extends AbstractSpaceAction {
 
         ContentEntityObject container = attachment.getContainer();
         if (container != null) {
-            String pageTitle = container != null ? container.getDisplayTitle() : "(unknown page)";
+            String pageTitle = container.getDisplayTitle();
             attachmentPageId = container.getId();
 
             if (!permissionManager.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.VIEW, attachment.getContainer())) {
@@ -180,7 +176,7 @@ public class ReqifAction extends AbstractSpaceAction {
                 return list();
             }
         } else {
-            if (!permissionManager.hasPermission(AuthenticatedUserThreadLocal.get(), Permission.ADMINISTER, attachment.getSpace())) {
+            if (!permissionManager.hasPermission(user, Permission.ADMINISTER, attachment.getSpace())) {
                 message = "The page can't be displayed.";
                 addActionError("This attachment is not on a page. You need to be a space administrator.");
                 return list();
@@ -213,10 +209,10 @@ public class ReqifAction extends AbstractSpaceAction {
                     List<List<String>> messages = importResults.getMessageBeanAsText();
                     if (messages.size() != 4)
                         throw new RuntimeException("Error: The API isn't conform to specifications: " + messages.size());
-                    for (String message : messages.get(0)) addActionMessage(message); // Success
-                    for (String message : messages.get(1)) addActionMessage(message); // Info
-                    for (String message : messages.get(2)) addActionMessage("Warning: " + message); // Warning
-                    for (String message : messages.get(3)) addActionError(message); // Error
+                    if (messages.get(0) != null) for (String message : messages.get(0)) addActionMessage(message); // Success
+                    if (messages.get(1) != null) for (String message : messages.get(1)) addActionMessage(message); // Info
+                    if (messages.get(2) != null) for (String message : messages.get(2)) addActionMessage("Warning: " + message); // Warning
+                    if (messages.get(3) != null) for (String message : messages.get(3)) addActionError(message); // Error
                     return null;
                 }
                 case "delete-requirements-and-document": {
@@ -545,17 +541,8 @@ public class ReqifAction extends AbstractSpaceAction {
         return rySettingsAPI.getLimitForImport();
     }
 
-    @Override
-    public void setPermissionManager(PermissionManager permissionManager) {
-        this.permissionManager = permissionManager;
-    }
-
     public UIReqifDocument getReqifDocument() {
         return reqifDocument;
-    }
-
-    public void setExternalAPI(DocumentImporterAPI externalAPI) {
-        this.externalAPI = externalAPI;
     }
 
     public Attachment getAttachment() {
@@ -572,10 +559,6 @@ public class ReqifAction extends AbstractSpaceAction {
 
     public void setContextPathHolder(ContextPathHolder contextPathHolder) {
         this.contextPathHolder = contextPathHolder;
-    }
-
-    public void setAntisamy(RenderedContentCleaner antisamy) {
-        this.antisamy = antisamy;
     }
 
     public void setReqifConfigJson(String reqifConfigJson) {
@@ -640,5 +623,10 @@ public class ReqifAction extends AbstractSpaceAction {
 
     public String getNextPageUrl() {
         return nextPageUrl;
+    }
+
+    @Override
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
     }
 }

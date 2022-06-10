@@ -24,6 +24,7 @@ import com.atlassian.confluence.core.ContentEntityManager;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.pages.Attachment;
 import com.atlassian.confluence.pages.AttachmentManager;
+import com.atlassian.confluence.util.HtmlUtil;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
 import com.playsql.requirementyogi.api.beans.ImportedRef;
@@ -33,6 +34,7 @@ import com.playsql.requirementyogi.api.documentimporter.Document;
 import com.playsql.requirementyogi.api.documentimporter.Descriptor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class ReqifDescriptor implements Descriptor {
@@ -74,7 +76,7 @@ public class ReqifDescriptor implements Descriptor {
     }
 
     @Override
-    public void fillDocumentDetails(Requirement bean, ImportedRef importedRef, Map<String, Object> stash) {
+    public void fillDocumentDetails(String spaceKey, @Nullable Requirement bean, ImportedRef importedRef, Map<String, Object> stash) {
         String baseUrl = (String) stash.get("base-url");
         if (baseUrl == null) {
             baseUrl = applicationProperties.getBaseUrl(UrlMode.ABSOLUTE);
@@ -85,7 +87,7 @@ public class ReqifDescriptor implements Descriptor {
             attachment = ceoManager.getById(Long.parseLong(importedRef.getDocumentId()));
             stash.put("ceo-" + importedRef.getDocumentId(), attachment);
         }
-        String externalUrl = baseUrl + "/" + importedRef.getDescriptorKey() + "/view.action?key=" + bean.getSpaceKey() +
+        String externalUrl = baseUrl + "/" + importedRef.getDescriptorKey() + "/view.action?key=" + HtmlUtil.urlEncode(spaceKey) +
                 "&id=" + importedRef.getDocumentId() +
                 "&focus=" + importedRef.getMarkerInDocument();
 
