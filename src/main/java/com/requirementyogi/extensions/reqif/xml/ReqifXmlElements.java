@@ -21,7 +21,7 @@ package com.requirementyogi.extensions.reqif.xml;
  */
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.xml.sax.Attributes;
 

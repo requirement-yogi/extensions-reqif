@@ -26,7 +26,7 @@ import com.requirementyogi.extensions.reqif.ui.UIRequirement;
 import com.requirementyogi.extensions.reqif.ui.UIRequirementType;
 import com.requirementyogi.extensions.reqif.ui.UIRequirementValue;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;

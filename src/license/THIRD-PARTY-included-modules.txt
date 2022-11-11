@@ -1,3 +1,4 @@
 
-Lists of 1 third-party dependencies.
-     (Apache 2.0) Gson (com.google.code.gson:gson:2.8.6 - https://github.com/google/gson/gson)
+Lists of 2 third-party dependencies.
+     (Atlassian Customer Agreement) confluence-compat-lib (com.atlassian.confluence.compat:confluence-compat-lib:1.5.0 - https://www.atlassian.com/closedsource-pom/confluence-compat-lib/)
+     (Apache-2.0) Gson (com.google.code.gson:gson:2.9.1 - https://github.com/google/gson/gson)

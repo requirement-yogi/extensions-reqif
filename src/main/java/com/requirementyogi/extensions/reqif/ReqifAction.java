@@ -22,6 +22,7 @@ package com.requirementyogi.extensions.reqif;
 
 import bucket.core.persistence.hibernate.HibernateHandle;
 import com.atlassian.bonnie.Handle;
+import com.atlassian.confluence.compat.struts2.servletactioncontext.ServletActionContextCompatManager;
 import com.atlassian.confluence.core.ContentEntityObject;
 import com.atlassian.confluence.core.ContextPathHolder;
 import com.atlassian.confluence.labels.Label;
@@ -46,7 +47,6 @@ import com.atlassian.xwork.XsrfTokenGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.opensymphony.webwork.ServletActionContext;
 import com.playsql.requirementyogi.api.RYSettingsAPI;
 import com.playsql.requirementyogi.api.RYWebInterfaceAPI;
 import com.playsql.requirementyogi.api.documentimporter.ImportResults;
@@ -81,6 +81,7 @@ public class ReqifAction extends AbstractSpaceAction {
     private ContextPathHolder contextPathHolder;
     private ReqifDocumentManager reqifDocumentManager;
     private XsrfTokenGenerator xsrf;
+    private ServletActionContextCompatManager servletActionContextCompatManager;
 
     /* The ID of the ReqIF attachment */
     private Long id;
@@ -275,7 +276,7 @@ public class ReqifAction extends AbstractSpaceAction {
 
     private <T> T performAction(Function<String, T> callback) {
         if (action != null) {
-            if (org.apache.commons.lang.StringUtils.isNotBlank(atl_token) && xsrf.validateToken(ServletActionContext.getRequest(), atl_token)) {
+            if (StringUtils.isNotBlank(atl_token) && xsrf.validateToken(servletActionContextCompatManager.getRequest(), atl_token)) {
                 return callback.apply(action);
             } else {
                 addActionError("The XSRF token is invalid. That means a form was submitted, probably from another website, "
@@ -623,6 +624,10 @@ public class ReqifAction extends AbstractSpaceAction {
 
     public String getNextPageUrl() {
         return nextPageUrl;
+    }
+
+    public void setServletActionContextCompatManager(ServletActionContextCompatManager servletActionContextCompatManager) {
+        this.servletActionContextCompatManager = servletActionContextCompatManager;
     }
 
     @Override

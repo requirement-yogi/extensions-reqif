@@ -32,7 +32,7 @@ import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig.ColumnMapping;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig.SpecObjectMapping;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlDocument;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.List;

@@ -21,9 +21,9 @@ package com.requirementyogi.extensions.reqif.ui;
  */
 
 import com.google.common.collect.Lists;
+import com.playsql.requirementyogi.api.beans.Requirement;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.SpecObject;
-import com.playsql.requirementyogi.api.beans.Requirement;
 
 import java.util.List;
 import java.util.Objects;

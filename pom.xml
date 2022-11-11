@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.requirementyogi.extensions</groupId>
     <artifactId>reqif</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3</version>
 
     <organization>
         <name>Requirement Yogi</name>
@@ -66,6 +66,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.atlassian.confluence.compat</groupId>
+            <artifactId>confluence-compat-lib</artifactId>
+            <version>${confluence.compat}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
@@ -98,7 +103,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.0</version>
+            <version>2.9.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -159,6 +164,13 @@
                     </pluginArtifacts>
                     <instructions>
                         <Import-Package>
+                            <!-- According to https://confluence.atlassian.com/doc/struts-2-upgrade-1155473773.html -->
+                            com.opensymphony.xwork;resolution:=optional,
+                            com.opensymphony.webwork;resolution:=optional,
+                            com.opensymphony.webwork.inerceptor;resolution:=optional,
+                            org.apache.struts2;resolution:=optional,
+                            com.opensymphony.xwork2;resolution:=optional,
+
                             org.w3c.dom;version="0.0.0",
 
                             com.playsql.requirementyogi.ao;version="0.0.0",
@@ -184,6 +196,10 @@
                             <!-- The real problem here is that 2 subpackages (createcontent and featurediscovery) have
                                  versions 5.0.9 and 1.9 while the parent package com.atlassian.confluence requires 5.8.6 -->
                             com.atlassian.confluence.*;version="0.0.0",
+                            <!-- You might believe this is implicit due to the previous line. It isn't!
+                            because our beloved bnd doesn't see it in our class imports, so it doesn't
+                            import it! -->
+                            com.atlassian.confluence.search.v2.searchfilter;resolution:=optional;version="0.0.0",
                             com.atlassian.core.exception*;resolution:=optional;version="0.0.0",
                             com.atlassian.core.task*;version="0.0.0",
                             com.atlassian.core.user.preferences*;resolution:=optional;version="0.0.0",
@@ -206,8 +222,6 @@
                             com.atlassian.annotations;version="0.0.0",
                             com.google.common.*;version="0.0.0",
                             com.google.common.collect*;resolution:=optional;version="0.0.0",
-                            com.opensymphony.webwork.interceptor;version="0.0.0",
-                            com.opensymphony.webwork;version="0.0.0",
                             com.atlassian.mywork.service;resolution:=optional;version="0.0.0",
                             com.atlassian.mywork.model;resolution:=optional;version="0.0.0",
 
@@ -230,7 +244,6 @@
                             javax.xml.validation;version="0.0.0",
                             net.java.ao.schema;version="0.0.0",
                             net.java.ao;version="0.0.0",
-                            net.sf.hibernate;version="0.0.0",
                             org.apache.commons.text;version="0.0.0",
                             org.apache.commons.io;version="0.0.0",
                             org.apache.commons.lang3*;version="0.0.0",
@@ -245,7 +258,8 @@
                             org.jsoup;version="0.0.0",
                             org.springframework.beans.factory*;version="0.0.0",
                             com.ctc.wstx.stax;resolution:=optional;version="0.0.0",
-                            com.atlassian.spring.container;version="0.0.0"
+                            com.atlassian.spring.container;version="0.0.0",
+                            org.slf4j*;resolution:=optional;version="0.0.0"
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -397,8 +411,9 @@
         <atlassian.dev.mode>false</atlassian.dev.mode>
         <java.version>1.8</java.version>
         <confluence.version>7.13.0</confluence.version>
+        <confluence.compat>1.5.0</confluence.compat>
         <confluence.data.version>7.13.0</confluence.data.version>
-        <requirementsyogi.version>3.3-SNAPSHOT</requirementsyogi.version>
+        <requirementsyogi.version>3.4-SNAPSHOT</requirementsyogi.version>
         <skipTests>true</skipTests>
     </properties>
 

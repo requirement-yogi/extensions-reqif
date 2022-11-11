@@ -60,6 +60,7 @@
     </xwork>
 
     <component key="reqifDocumentManager" name="ReqIF Document Manager" class="com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager"/>
+    <component key="compatibility-adaptor" class="com.atlassian.confluence.compat.struts2.servletactioncontext.ServletActionContextCompatManager"/>
 
     <!-- Classes implemented by the host application (or by Requirement Yogi and made public) -->
     <component-import key="external-api" name="Document Importer API" interface="com.playsql.requirementyogi.api.DocumentImporterAPI"/>

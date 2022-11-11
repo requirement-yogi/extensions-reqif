@@ -22,14 +22,27 @@
 <licenseSummary>
   <dependencies>
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
+      <groupId>com.atlassian.confluence.compat</groupId>
+      <artifactId>confluence-compat-lib</artifactId>
+      <version>1.5.0</version>
       <licenses>
         <license>
-          <name>Apache 2.0</name>
-          <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-          <file>apache 2.0 - license-2.0.txt</file>
+          <name>Atlassian Customer Agreement</name>
+          <url>https://www.atlassian.com/legal/customer-agreement</url>
+          <distribution>repo</distribution>
+          <file>atlassian customer agreement - customer-agreement.html</file>
+        </license>
+      </licenses>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.9.1</version>
+      <licenses>
+        <license>
+          <name>Apache-2.0</name>
+          <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+          <file>apache-2.0 - license-2.0.txt</file>
         </license>
       </licenses>
     </dependency>

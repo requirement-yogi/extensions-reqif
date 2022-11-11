@@ -29,9 +29,9 @@ import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
 import com.playsql.requirementyogi.api.beans.ImportedRef;
 import com.playsql.requirementyogi.api.beans.Requirement;
-import com.playsql.requirementyogi.api.documentimporter.DocumentId;
-import com.playsql.requirementyogi.api.documentimporter.Document;
 import com.playsql.requirementyogi.api.documentimporter.Descriptor;
+import com.playsql.requirementyogi.api.documentimporter.Document;
+import com.playsql.requirementyogi.api.documentimporter.DocumentId;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

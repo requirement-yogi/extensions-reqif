@@ -26,7 +26,7 @@ import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
 import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.Unknown;
 import com.requirementyogi.extensions.reqif.xml.ReqifXmlElements.XmlElement;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
