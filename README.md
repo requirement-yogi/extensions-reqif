@@ -1,6 +1,8 @@
+Migrated to GitHub: https://github.com/requirement-yogi/extensions-reqif
+
 # ReqIF extension for [Requirement Yogi](https://www.requirementyogi.com/)
 
-This is a demo of Requirement Yogi's [Public API](https://docs.requirementyogi.com/). Feel free to clone and try it.
+This is a demo of Requirement Yogi's [Public API](https://developer.requirementyogi.com/). Feel free to clone and try it.
 This is the source code of the app named "RY extension - ReqIF" on the Atlassian Marketplace.
 
 # How to create my own importer?
