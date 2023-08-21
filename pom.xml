@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.requirementyogi.extensions</groupId>
     <artifactId>reqif</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
 
     <organization>
         <name>Requirement Yogi</name>
@@ -20,6 +20,12 @@
         Requires Requirements Yogi to work, please ensure Requirements Yogi is installed before using this plugin.
         You can buy Requirements Yogi at https://marketplace.atlassian.com/apps/1212523/requirements-yogi
     </description>
+
+    <scm>
+        <url>https://github.com/requirement-yogi/extensions-reqif</url>
+        <connection>scm:git:ssh://git@github.com:requirement-yogi/extensions-reqif.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:requirement-yogi/extensions-reqif.git</developerConnection>
+    </scm>
 
     <packaging>atlassian-plugin</packaging>
 
@@ -63,6 +69,19 @@
                     <groupId>org.hamcrest</groupId>
                     <artifactId>hamcrest-library</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!-- So that the vulnerability build doesn't yell at us -->
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -93,17 +112,17 @@
             <artifactId>requirementyogi</artifactId>
             <version>${requirementsyogi.version}</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.playsql</groupId>
-                    <artifactId>utils</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.playsql</groupId>
+            <artifactId>utils-confluence</artifactId>
+            <version>${requirementsyogi.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.9.1</version>
+            <version>2.10.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -119,14 +138,13 @@
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
                 <artifactId>amps-maven-plugin</artifactId>
-                <version>8.4.0</version>
+                <version>8.8.1</version>
                 <extensions>true</extensions>
                 <configuration><!--
                     <httpPort>1991</httpPort>
                     <contextPath>/confluence</contextPath>-->
                     <systemPropertyVariables>
                         <upm.pac.disable>true</upm.pac.disable>
-                        <atlassian.dev.mode>${atlassian.dev.mode}</atlassian.dev.mode>
                     </systemPropertyVariables>
                     <enableQuickReload>true</enableQuickReload>
                     <instanceId>confluence</instanceId>
@@ -174,8 +192,10 @@
                             org.w3c.dom;version="0.0.0",
 
                             com.playsql.requirementyogi.ao;version="0.0.0",
-                            com.playsql.requirementyogi.api;version="0.0.0",
                             com.playsql.requirementyogi.api*;version="0.0.0",
+                            com.playsql.utils.api;resolution:=optional;version="0.0.0",
+                            com.playsql.utils.api.interfaces;resolution:=optional;version="0.0.0",
+                             com.playsql.utils.api.utils;resolution:=optional;version="0.0.0",
 
                             org.eclipse.core.runtime;resolution:=optional;version="0.0.0",
                             org.jdom*;version="0.0.0",
@@ -228,8 +248,8 @@
                             javax.annotation*;version="0.0.0",
                             javax.imageio;version="0.0.0",
                             javax.lang.model*;version="0.0.0",
-                            javax.print.attribute;version="0.0.0",
-                            javax.print;version="0.0.0",
+                            javax.print.attribute;resolution:=optional;version="0.0.0",
+                            javax.print;resolution:=optional;version="0.0.0",
                             javax.servlet.http;version="0.0.0",
                             javax.servlet;version="0.0.0",
                             javax.tools;version="0.0.0",
@@ -256,7 +276,9 @@
                             org.jsoup.nodes;version="0.0.0",
                             org.jsoup.select;version="0.0.0",
                             org.jsoup;version="0.0.0",
+                            org.springframework.beans.factory;resolution:=optional;version="0.0.0",
                             org.springframework.beans.factory*;version="0.0.0",
+                            org.springframework.util;resolution:=optional;version="0.0.0"
                             com.ctc.wstx.stax;resolution:=optional;version="0.0.0",
                             com.atlassian.spring.container;version="0.0.0",
                             org.slf4j*;resolution:=optional;version="0.0.0"
@@ -266,7 +288,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -408,12 +430,11 @@
     </distributionManagement>
 
     <properties>
-        <atlassian.dev.mode>false</atlassian.dev.mode>
         <java.version>1.8</java.version>
-        <confluence.version>7.13.0</confluence.version>
+        <confluence.version>7.19.0</confluence.version>
         <confluence.compat>1.5.0</confluence.compat>
-        <confluence.data.version>7.13.0</confluence.data.version>
-        <requirementsyogi.version>3.4-SNAPSHOT</requirementsyogi.version>
+        <confluence.data.version>7.19.0</confluence.data.version>
+        <requirementsyogi.version>3.6-SNAPSHOT</requirementsyogi.version>
         <skipTests>true</skipTests>
     </properties>
 

@@ -1,0 +1,36 @@
+End-User License Agreement ("EULA" for Play SQL products as of Jan 29, 2019)
+
+Copyright (c) 2012, Play SQL S.A.S.U., All rights reserved.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ADRIEN RAGOT OR PLAY SQL S.A.S.U. BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS 
+OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+Third party programs or services: When the software uses, requires or depends on third party programs or 
+services, the author cannot be held liable for any failure or limitation of those services. In particular, 
+Atlassian, Digital Ocean, OVH, MailChimp, an Internet provider or any third party may suspend, stop 
+delivering or fail at delivering their services, temporarily or permanently, whether it is a consequence 
+or not of a breach or termination of a contract by either party; In no event can the author be held liable 
+for the consequences on the capabilities and operation of the software.
+Privacy Policy: By agreeing with this EULA, you agree with the Privacy Policy.
+Neither the name of Play SQL or Requirement Yogi nor the names of its contributors may be used to endorse
+or promote products without specific prior written permission. By agreeing with this EULA, the End User
+agrees that Play SQL and Requirement Yogi are trademarks of Adrien Ragot. By agreeing with this EULA, you
+also agree that Play SQL may publicly list your company name among the list of our customers, as long as it does
+not make it look like an endorsement. You can oppose being listed by sending an email to our support.
+The license applies to all versions of the products, downloaded or published on or after the license date. 
+A new version of the license may be published; New license versions replace former ones and are applicable 
+to all versions of the product published or downloaded on or after the license date. The author doesn't commit 
+to notifying users of license changes; The user approves the new licence by clicking the Upgrade button or 
+downloading the new version.
+No information given on the website or on product support is contractual unless explicitly specified. Atlassian 
+has policies about add-on evaluation and users are encouraged to seek external professional advice before 
+committing to a purchase. The author relies on the Atlassian policies for the evaluation and purchase management.
+This EULA is governed by the laws of France, and, subject to the following sentence, the parties irrevocably 
+and unconditionally submit to the exclusive jurisdiction of the courts of Lyon, France. Except in circumstances 
+where a party seeks urgent injunctive relief, before commencing any court proceedings, if any dispute arises 
+under these EULA the parties will negotiate in good faith to resolve the dispute.

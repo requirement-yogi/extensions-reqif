@@ -1,4 +1,7 @@
 
-Lists of 2 third-party dependencies.
+Lists of 5 third-party dependencies.
+     (Commercial) Confluence Utils library (com.playsql:utils-confluence:3.5-SNAPSHOT - no url defined)
      (Atlassian Customer Agreement) confluence-compat-lib (com.atlassian.confluence.compat:confluence-compat-lib:1.5.0 - https://www.atlassian.com/closedsource-pom/confluence-compat-lib/)
-     (Apache-2.0) Gson (com.google.code.gson:gson:2.9.1 - https://github.com/google/gson/gson)
+     (Apache-2.0) Gson (com.google.code.gson:gson:2.10.1 - https://github.com/google/gson/gson)
+     (The MIT License) jsoup Java HTML Parser (org.jsoup:jsoup:1.16.1 - https://jsoup.org/)
+     (Commercial) Utils library (com.playsql:utils:3.5-SNAPSHOT - no url defined)

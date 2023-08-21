@@ -31,9 +31,6 @@ import com.atlassian.confluence.pages.AttachmentManager;
 import com.atlassian.confluence.search.service.ContentTypeEnum;
 import com.atlassian.confluence.search.v2.*;
 import com.atlassian.confluence.search.v2.query.*;
-import com.atlassian.confluence.search.v2.searchfilter.InSpaceSearchFilter;
-import com.atlassian.confluence.search.v2.searchfilter.SiteSearchPermissionsSearchFilter;
-import com.atlassian.confluence.search.v2.searchfilter.SpacePermissionsSearchFilter;
 import com.atlassian.confluence.search.v2.sort.ModifiedSort;
 import com.atlassian.confluence.security.Permission;
 import com.atlassian.confluence.security.PermissionManager;
@@ -51,9 +48,11 @@ import com.playsql.requirementyogi.api.RYSettingsAPI;
 import com.playsql.requirementyogi.api.RYWebInterfaceAPI;
 import com.playsql.requirementyogi.api.documentimporter.ImportResults;
 import com.playsql.requirementyogi.api.permissions.PermissionException;
+import com.requirementyogi.server.utils.confluence.search.CQLSearchService;
 import com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager;
 import com.requirementyogi.extensions.reqif.ui.UIReqifDocument;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
+import com.requirementyogi.server.utils.confluence.compat.CompatibilityLayer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -67,6 +66,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.requirementyogi.extensions.reqif.managers.ReqifDocumentManager.*;
+import static com.requirementyogi.server.utils.confluence.search.CQLSearchService.ONLY_ONE_PAGE;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 
 public class ReqifAction extends AbstractSpaceAction {
@@ -276,7 +276,7 @@ public class ReqifAction extends AbstractSpaceAction {
 
     private <T> T performAction(Function<String, T> callback) {
         if (action != null) {
-            if (StringUtils.isNotBlank(atl_token) && xsrf.validateToken(servletActionContextCompatManager.getRequest(), atl_token)) {
+            if (StringUtils.isNotBlank(atl_token) && xsrf.validateToken(CompatibilityLayer.getRequest(servletActionContextCompatManager), atl_token)) {
                 return callback.apply(action);
             } else {
                 addActionError("The XSRF token is invalid. That means a form was submitted, probably from another website, "
@@ -311,12 +311,10 @@ public class ReqifAction extends AbstractSpaceAction {
         SearchQuery query = BooleanQuery.andQuery(new InSpaceQuery(spaceKey), searchForLabels, authorizedExtensionsQuery, attachmentContentTypeQuery);
         SearchSort sort = new ModifiedSort(SearchSort.Order.DESCENDING); // latest created attachment first
 
-        SearchFilter securityFilter = SiteSearchPermissionsSearchFilter.getInstance().and(new InSpaceSearchFilter(Sets.newHashSet(spaceKey))).and(SpacePermissionsSearchFilter.getInstance());
-
-        ISearch search = new ContentSearch(query, sort, securityFilter, currentOffset, currentLimit);
-        SearchResults searchResults;
+        CQLSearchService cqlSearchService = CQLSearchService.getInstance();
+        CQLSearchService.SearchResultAdaptor searchResults;
         try {
-            searchResults = searchManager.search(search);
+            searchResults = cqlSearchService.search(query, sort, currentOffset, currentLimit);
             attachmentIds = processSearchResults(searchResults);
 
             totalResults = searchResults.getUnfilteredResultsCount();
@@ -358,10 +356,9 @@ public class ReqifAction extends AbstractSpaceAction {
     /**
      * Return a list of Attachments to be displayed and sort the ones that are irrelevant
      */
-    private static List<Long> processSearchResults(SearchResults searchResults) {
+    private static List<Long> processSearchResults(CQLSearchService.SearchResultAdaptor searchResults) {
         List<Long> attachmentIds = Lists.newArrayList();
-        List<SearchResult> list = searchResults.getAll();
-        for (SearchResult item : list) {
+        for (SearchResult item : searchResults.iterator(ONLY_ONE_PAGE, Function.identity())) {
             Handle handle = item.getHandle();
             if (handle instanceof HibernateHandle) {
                 long id = ((HibernateHandle) handle).getId();

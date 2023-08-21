@@ -35,6 +35,7 @@
     <resource type="i18n" name="Internationalization" location="com/playsql/extensions-reqif-i18n" />
 
     <web-item key="ry-nav-import" name="Import tab in the nav" section="requirementyogi/space-nav-bar" weight="110">
+        <param name="tab-key">reqif-form</param>
         <label>Import from ReqIF</label>
         <link linkId="reqif-form">${req.contextPath}/reqif/view.action?key=${action.getSpaceKey()}</link>
     </web-item>

@@ -26,6 +26,8 @@ import com.playsql.requirementyogi.api.DocumentImporterAPI.RequirementPersister;
 import com.playsql.requirementyogi.api.beans.ImportedRef;
 import com.playsql.requirementyogi.api.beans.Property;
 import com.playsql.requirementyogi.api.beans.Requirement;
+import com.playsql.requirementyogi.api.beans.StorageData;
+import com.playsql.requirementyogi.api.beans.enums.StorageType;
 import com.requirementyogi.extensions.reqif.ReqifDescriptor;
 import com.requirementyogi.extensions.reqif.ReqifUtils;
 import com.requirementyogi.extensions.reqif.xml.ReqifConfig;
@@ -130,9 +132,9 @@ public class UIReqifDocument {
                             } else if (columnMapping.isTargetText()) {
                                 String existingHtml = StringUtils.isNotBlank(requirement.getHtmlExcerpt()) ? requirement.getHtmlExcerpt() + " - " : "";
                                 if (value.isXhtml()) {
-                                    requirement.setHtmlExcerpt(existingHtml + sanitize(value.getValue()));
+                                    requirement.setStorageData(new StorageData(StorageType.LEGACY_JS, existingHtml + sanitize(value.getValue())));
                                 } else {
-                                    requirement.setHtmlExcerpt(existingHtml + escape(value.getValue()));
+                                    requirement.setStorageData(new StorageData(StorageType.LEGACY_JS, existingHtml + escape(value.getValue())));
                                 }
                             } else if (columnMapping.getTarget().startsWith(PROPERTY_SEPARATOR)) {
                                 String propertyName = columnMapping.getTarget().substring(1);
