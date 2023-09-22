@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.playsql</groupId>
       <artifactId>utils-confluence</artifactId>
-      <version>3.5-SNAPSHOT</version>
+      <version>3.6-SNAPSHOT</version>
       <licenses>
         <license>
           <name>Commercial</name>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>com.playsql</groupId>
       <artifactId>utils</artifactId>
-      <version>3.5-SNAPSHOT</version>
+      <version>3.6-SNAPSHOT</version>
       <licenses>
         <license>
           <name>Commercial</name>

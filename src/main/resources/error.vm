@@ -1,3 +1,4 @@
+#if (!$req) #set ($req = $request) #end ## See RY-1323
 <html>
 <head>
     <title>$action.getActionName($action.getClass().getName())</title>

@@ -1,3 +1,4 @@
+#if (!$req) #set ($req = $request) #end ## See RY-1323
 <html>
 <head>
     <title>$action.getText("com.requirementyogi.extensions.reqif.ReqifAction.view.name-with-file", [ $attachment.displayTitle ])</title>

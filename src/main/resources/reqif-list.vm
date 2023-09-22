@@ -1,3 +1,4 @@
+#if (!$req) #set ($req = $request) #end ## See RY-1323
 <html>
 <head>
     <title>$action.getText("com.requirementyogi.extensions.reqif.ReqifAction.action.name")</title>
@@ -33,7 +34,7 @@
     </footer>
 </section>
 
-<h2>Files List</h2>
+<h2>ReqIF attachments</h2>
 <div id="navigation" class="content-navigation">
     <ul class="ajs-menu-bar">
         #if ($paginationPrevUrl)
